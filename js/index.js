@@ -164,6 +164,8 @@ $('.play').addEventListener('click', function () {
 	flag = false;
 	this.style.display = 'none';
 	$('.pause').style.display = 'inline-block';
+	$('.play-bar').className = 'play-bar'
+	$('.content-left').className = 'content-left left-active'
 
 })
 function strUrl() {
@@ -196,6 +198,8 @@ $('.pause').onclick = function () {
 	//开启定时器
 	moveEach(timerOne, 20)
 	//切换按钮
+	$('.play-bar').className = 'play-bar play-active'
+	$('.content-left').className = 'content-left'
 	this.style.display = 'none';
 	$('.play').style.display = 'inline-block';
 	//当前播放的歌曲在列表高亮
@@ -218,6 +222,8 @@ $('.next').onclick = function () {
 	//播放
 	$('#music').play();
 	//切换按钮
+	$('.play-bar').className = 'play-bar play-active'
+	$('.content-left').className = 'content-left'
 	$('.pause').style.display = 'none';
 	$('.play').style.display = 'inline-block';
 	//当前播放的歌曲在列表高亮
@@ -237,6 +243,8 @@ $('.prev').onclick = function () {
 	//播放
 	$('#music').play();
 	//切换按钮
+	$('.play-bar').className = 'play-bar play-active'
+	$('.content-left').className = 'content-left'
 	$('.pause').style.display = 'none';
 	$('.play').style.display = 'inline-block';
 	//当前播放的歌曲在列表高亮

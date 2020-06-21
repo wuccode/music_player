@@ -146,16 +146,60 @@ body::-webkit-scrollbar-thumb{
     height: 500px;
     margin: 0 auto;
 }
+.play-head{
+    width: 30px;
+    height: 30px;
+    background: url('./../img/1.png') no-repeat;
+    background-size:cover ;
+    position: absolute;
+    top: -16px;
+    left: 150px;
+    z-index: 11;
+
+}
+.play-bar{
+    width: 88px;
+    height: 128px;
+    background: url('./../img/2.png') no-repeat;
+    background-size:cover;
+    position: absolute;
+    top: 0px;
+    left: 160px;
+    z-index: 10;
+    transform-origin: top left;
+    transform: rotate(-26deg);
+    transition:transform .3s;
+
+}
+.play-active{
+    transform: rotate(5deg) !important;
+}
 .wrapper #wrapper-bg .bg-content .content-left{
     position: absolute;
-    top: 60px;
+    top: 80px;
     left: 30px;
-    width:230px;
-    height: 230px;
+    width:260px;
+    height: 260px;
+    animation: rotation 20s linear infinite;
+    overflow: hidden;
+    border-radius:50% ;
+    background: linear-gradient(-45deg,#333540,#070708,#333540);
+}
+
+.left-active{
+    animation-play-state:paused !important;
+}
+@keyframes rotation{
+    0%{
+        transform: rotate(0deg);
+    }
+    100%{
+        transform: rotate(360deg);
+    }
 }
 .wrapper #wrapper-bg .bg-content .content-right{
     position: absolute;
-    right: 20px;
+    right: 0px;
     top: 30px;
     width: 650px;
     height: 500px;
@@ -190,6 +234,7 @@ body::-webkit-scrollbar-thumb{
     left: 50px;
     color: #fff;
     cursor: pointer;
+    
 }
 .wrapper #wrapper-bg .bg-content .content-right p #right{
     position: absolute;
@@ -197,6 +242,7 @@ body::-webkit-scrollbar-thumb{
     color: rgba(255, 255, 255, .2);
 
 }
+
 .wrapper #wrapper-bg .bg-content .content-right p #right-content{
     position: absolute;
     width: 100px;
@@ -209,15 +255,23 @@ body::-webkit-scrollbar-thumb{
     text-overflow: ellipsis;
 }
 .wrapper #wrapper-bg .bg-content .content-left #left-img{
-    width: 100%;
-    height: 100%;
+    position: absolute;
+    width: 70%;
+    height: 70%;
+    border-radius:50% ;
+    left: 50%;
+    top: 50%;
+    transform: translate(-50%,-50%);
 }
 .wrapper #wrapper-bg .bg-content .content-right .main{
     width: 100%;
     min-height: 400px;
     position: relative;
-    left: -40px;
+    left: 0px;
     overflow: hidden;
+}
+.wrapper #wrapper-bg .bg-content .content-right .main div:nth-child(2){
+    right: 100px !important;
 }
 .wrapper #wrapper-bg .bg-content .content-right .main .main-content{
     width: 70%;
@@ -399,7 +453,7 @@ body::-webkit-scrollbar-thumb{
     top: -120px;
     width: 40px;
     height: 140px;
-    background: #262b33;
+    background: linear-gradient(-45deg,#333540,#070708,#333540);
     border-radius: 5px;
     display: none;
     cursor: pointer;
@@ -421,7 +475,7 @@ body::-webkit-scrollbar-thumb{
     transform: translateX(-50%);
     width: 3px;
     height: 100px;
-    background: rgba(255, 255, 255, 0.288);
+    background: rgba(255, 255, 255, 0.151);
     border-radius: 5px;
 }
 .wrapper .fixed-bottom .bottom-main .sound:hover .sound-set{
@@ -591,8 +645,8 @@ body::-webkit-scrollbar-thumb{
 }
 .download{
     position: absolute;
-    top: 360px;
-    left: 32px;
+    top: 440px;
+    left: 48px;
     width: 230px;
     height: 50px;
     background: url(../img/downlaod.png) no-repeat;
@@ -610,6 +664,7 @@ body::-webkit-scrollbar-thumb{
     width: 800px;
     background: #fff;
     padding-bottom:50px ;
+    z-index: 50;
 }
 .floatList .to{
     position: absolute;

@@ -476,26 +476,4 @@ function initList(arr) {
 $('.download').onclick = function () {
 	window.open($('#music').src);
 }
-//监控浏览器窗口的变化
-let cH = document.documentElement.clientHeight || document.body.clientHeight;
-let timers = null;
-window.addEventListener('resize', function () {
-	cH = document.documentElement.clientHeight || document.body.clientHeight;
-	if (timers) {
-		clearTimeout(timers)
-	}
-	timers = setTimeout(function () {
-		//调整歌词区域高度
-		bgHeight();
-		//更新滚动条长度
-		mainBar.updateTop()
-	}, 500)
-})
-bgHeight();
-function bgHeight() {
-	$('#wrapper-bg').style.height = cH - 80 + 'px';
-	$('#bg-content').style.height = cH - 230 + 'px';
-	$('.content-right').style.height = $('#bg-content').offsetHeight - 30 + 'px';
-	$('.main').style.height = $('.content-right').offsetHeight - 200 + 'px';
-}
-	//结束
+//结束

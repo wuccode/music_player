@@ -214,7 +214,7 @@ body::-webkit-scrollbar-thumb{
 }
 .wrapper #wrapper-bg .bg-content .content-right .main{
     width: 100%;
-    min-height: 300px;
+    min-height: 400px;
     position: relative;
     left: -40px;
     overflow: hidden;

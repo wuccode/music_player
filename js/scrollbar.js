@@ -6,7 +6,6 @@ class ScrollBar {
         this.bgColor = bgColor;
         this.conMoveTarget = 0;
         this.scrMoveTarget = 0;
-        this.num = 0;
         this.timer = null;
     }
     init() {
@@ -44,20 +43,22 @@ class ScrollBar {
     updateTop(){
         this.newDiv.children[1].style.height = this.divHeight()
         let wrapTop = this.conMoveTarget < -(this.newDiv.children[0].offsetHeight - this.newDiv.offsetHeight) ? -(this.newDiv.children[0].offsetHeight - this.newDiv.offsetHeight) : this.conMoveTarget;
-        this.newDiv.children[0].style.top = wrapTop + 'px';
         let scrTop = this.scrMoveTarget > this.newDiv.offsetHeight - this.newDiv.children[1].offsetHeight ? this.newDiv.offsetHeight - this.newDiv.children[1].offsetHeight : this.scrMoveTarget
+        this.newDiv.children[0].style.top = wrapTop + 'px';
         this.newDiv.children[1].style.top = scrTop +'px';
     }
     scrollBarWheel() {
-        this.newDiv.addEventListener('wheel', (event) => {
-            let e = event || window.event;   
-            e.preventDefault()
-            this.num = this.newDiv.children[0].offsetTop;
+        let mouseWheel = (/Firefox/i.test(navigator.userAgent)) ? "DOMMouseScroll" : "mousewheel"; 
+        this.newDiv.addEventListener(mouseWheel, (ev) => {
             clearInterval(this.timer)
+            let e = ev || window.event;
+            e.preventDefault()
+            let Ewheel = e.wheelDelta || e.detail; 
+            let num = this.newDiv.children[0].offsetTop;
             this.timer = setInterval(() => {
-                if (e.wheelDelta < 0) {
+                if (Ewheel === -180 || Ewheel === 3) {
                     this.conMoveTarget -= 60;
-                    if (this.conMoveTarget < this.num - 100) {
+                    if (this.conMoveTarget < num - 100) {
                         clearInterval(this.timer)
                     }
                     if (this.conMoveTarget < -(this.newDiv.children[0].offsetHeight - this.newDiv.offsetHeight)) {
@@ -65,9 +66,9 @@ class ScrollBar {
                         clearInterval(this.timer);
                     }
                 }
-                if (e.wheelDelta > 0) {
+                if (Ewheel === 180 || Ewheel === -3) {
                     this.conMoveTarget += 60;
-                    if (this.conMoveTarget > this.num + 100) {
+                    if (this.conMoveTarget > num + 100) {
                         clearInterval(this.timer)
                     }
                     if (this.conMoveTarget > 0) {

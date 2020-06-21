@@ -1,0 +1,145 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="UTF-8">
+    <!-- <meta name="viewport" content="width=device-width, initial-scale=1.0"> -->
+    <meta http-equiv="X-UA-Compatible" content="ie=edge">
+    <title>音乐播放器</title>
+    <link rel="shortcut icon" href="img/icon.png" type="image/x-icon">
+    <link rel="stylesheet" href="css/index.css">
+    <script src="js/function.js" defer></script>
+    <script src="js/scrollbar.js" defer></script>
+    <script src="js/data.js" defer></script>
+    <script src="js/index.js" defer></script>
+</head>
+
+<body>
+    <div class="wrapper">
+        <div class="wrapper-top wrap-top">
+            <div class="wrapper-top-nav">
+                <div class="top-nav-img">
+                    <div></div>
+                    <div></div>
+                    <div></div>
+                </div>
+                <div class="top-nav-input">
+                    <input type="text" placeholder="搜索你喜欢的" id="int">
+                    <div id="list">
+                    </div>
+                    <div id="bs"></div>
+                </div>
+            </div>
+        </div>
+        <div id="wrapper-bg">
+            <div id="img-bg">
+
+            </div>
+
+            <div class="bg-content" id="bg-content">
+                <div class="download">
+                </div>
+                <div class="content-left">
+                    <img src="" alt="" id="left-img">
+                </div>
+                <div class="content-right">
+                    <h1 id="content-title" class=""></h1>
+                    <p id="p">
+                        <span id="left">专辑：</span><span id="left-content"></span>
+                        <span id="right">歌手：</span><span id="right-content"></span>
+                    </p>
+                    <div class="main">
+                        <div class="main-content">
+
+
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+        <div class="fixed-bottom">
+            <audio src="" id="music"></audio>
+            <div class="bottom-main">
+                <div id="icon">
+                    <i class="prev"></i>
+                    <i class="play"></i>
+                    <i class="pause"></i>
+                    <i class="next"></i>
+                </div>
+                <div class="music-img">
+                    <img src="" alt="" id="mu-bg">
+                </div>
+                <div class="musicName"></div>
+                <div class="progress">
+                    <div class="progress-w">
+                    </div>
+                    <div class="progress-x">
+                    </div>
+                </div>
+                <div id="content-time">
+                    00:00 / 00:00
+                </div>
+                <div class="sound">
+                    <div class="sound-set">
+                        <div class="triangle"></div>
+                        <div class="sY">
+                            <div class="sY-Y"></div>
+                            <div class="sY-H"></div>
+                        </div>
+                    </div>
+                    <i class="icon-sound"></i>
+                </div>
+                <div class="switchover">
+                    <div class="icon">
+
+                    </div>
+                </div>
+                <div class="mlist">
+                    <div class="mlist-content">
+                        <div class="mlist-head">
+                            播放记录
+                            <div class="icon">
+
+                            </div>
+
+                        </div>
+                        <div class="bar">
+                            <ul id="ul-list">
+
+                            </ul>
+                        </div>
+
+                    </div>
+                    <span class="num">0</span>
+                </div>
+            </div>
+        </div>
+    </div>
+    <div class="floatList">
+
+        <div class="to">更多请登录客户端...</div>
+        <div class="icon" id="esc">
+
+        </div>
+        <div class="floatHeader">
+            <div class="name">歌曲</div>
+        </div>
+        <p>搜索到<span id="floatHeaderTitle"></span>相关的歌曲</p>
+        <div class="head">
+
+            <span class="mName">歌曲名</span>
+            <span class="mAlbum">专辑</span>
+            <span class="mTime">时间</span>
+        </div>
+        <div class="search">
+            <ul id="listS">
+
+            </ul>
+        </div>
+    </div>
+    <div class="hint">
+        请搜索你喜欢音乐...
+    </div>
+</body>
+
+</html>

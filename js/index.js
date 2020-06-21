@@ -279,7 +279,7 @@ function getMuisc(option) {
 	//切换页面内容
 	if (arrMusicJson.length < 1) return;
 	$('.main-content').innerHTML = '';
-	muiscTime = []
+	muiscTime = [];
 	$('#music').src = option.url;
 	$('#left-content').innerHTML = option.album_name;//专辑
 	$('#left-content').title = option.album_name;
@@ -291,6 +291,8 @@ function getMuisc(option) {
 	$('#img-bg').style.background = `url(${option.img}) no-repeat`;//背景图片
 	$('#left-img').src = option.img;
 	$('#mu-bg').src = option.img;
+	$('.load').href = option.url;
+	$('.load').download = option.audio_name;
 	//获取歌词
 	let lyrics = option.lyrics;
 	//切割成数组
@@ -472,8 +474,5 @@ function initList(arr) {
 			}
 		}
 	})
-}
-$('.download').onclick = function () {
-	window.open($('#music').src);
 }
 //结束

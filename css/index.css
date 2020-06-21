@@ -147,24 +147,23 @@ body::-webkit-scrollbar-thumb{
     margin: 0 auto;
 }
 .play-head{
-    width: 30px;
-    height: 30px;
+    width: 24px;
+    height: 24px;
     background: url('./../img/1.png') no-repeat;
     background-size:cover ;
     position: absolute;
-    top: -16px;
-    left: 150px;
+    top: -14px;
+    left: 148px;
     z-index: 11;
-
 }
 .play-bar{
-    width: 88px;
-    height: 128px;
-    background: url('./../img/2.png') no-repeat;
+    width: 89px;
+    height: 123px;
+    background: url('./../img/needle-ip6.png') no-repeat;
     background-size:cover;
     position: absolute;
-    top: 0px;
-    left: 160px;
+    top: -2px;
+    left: 146px;
     z-index: 10;
     transform-origin: top left;
     transform: rotate(-26deg);
@@ -172,7 +171,7 @@ body::-webkit-scrollbar-thumb{
 
 }
 .play-active{
-    transform: rotate(5deg) !important;
+    transform: rotate(7deg) !important;
 }
 .wrapper #wrapper-bg .bg-content .content-left{
     position: absolute;
@@ -183,7 +182,8 @@ body::-webkit-scrollbar-thumb{
     animation: rotation 20s linear infinite;
     overflow: hidden;
     border-radius:50% ;
-    background: linear-gradient(-45deg,#333540,#070708,#333540);
+    background: url('./../img/disc-ip6.png') no-repeat;
+    background-size: cover;
 }
 
 .left-active{
@@ -256,8 +256,8 @@ body::-webkit-scrollbar-thumb{
 }
 .wrapper #wrapper-bg .bg-content .content-left #left-img{
     position: absolute;
-    width: 70%;
-    height: 70%;
+    width: 66%;
+    height: 66%;
     border-radius:50% ;
     left: 50%;
     top: 50%;

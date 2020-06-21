@@ -394,14 +394,14 @@ body::-webkit-scrollbar-thumb{
     bottom: 40px;
     transform: translateX(-50%);
     width: 400px;
-    height: 3px;
+    height: 4px;
     background: rgba(255, 255, 255, 0.151);
     border-radius: 5px;  
     cursor: pointer;  
 }
 .wrapper .fixed-bottom .bottom-main .progress .progress-w{
     width: 0px;
-    height: 3px;
+    height: 4px;
     border-bottom-left-radius: 5px;
     border-top-left-radius: 5px;
     background: rgba(246, 8, 48, 0.52);

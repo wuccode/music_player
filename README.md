@@ -11,4 +11,4 @@
 
 效果图
 
-![Alt text](img/QQ截图20200622203316.png)
+![Alt text](music_player/img/QQ截图20200622203316.png)

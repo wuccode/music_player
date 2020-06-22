@@ -11,4 +11,4 @@
 
 效果图
 
-![Alt text](music_player/img/QQ截图20200622203316.png)
+![Alt text](https://github.com/wuccode/music_player/blob/master/img/QQ%E6%88%AA%E5%9B%BE20200622203316.png)

@@ -5,9 +5,22 @@
 我使用的是酷狗的jsonp接口,经过我测试发现这三个接口可以用，我就用来写了这个播放器，
 
 ## 我封装的滚动条
-可以滚动内容和拖动滚动条
 
-![Alt text](./img/20200622203233.png)
+
+```
+//html代码,注意main里只能有一个div
+<div class="main">
+       <div>
+           //内容
+       </div>
+</div>
+//js代码
+let bar = new ScrollBar({
+    div : document.querySelector('.main'),
+    bgColor : '#000'
+})
+bar.init()//初始化
+```
 
 效果图
 

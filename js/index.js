@@ -274,8 +274,7 @@ function control() {
 	}
 	$('.main').onmouseout = function () {
 		active = true;
-		this.children[0].style.transition = 'top 0.4s ease-out';
-		this.children[1].style.transition = 'top 0.4s ease-out';
+		this.children[0].style.transition = 'top .3s ease-out';
 	}
 }
 function getMuisc(option) {
@@ -315,7 +314,7 @@ function getMuisc(option) {
 	}
 	//初始化滚动条
 	mainBar.init()
-	$('.main').children[1].style.transition = 'all 0.3s ease';
+	$('.main').children[1].style.transition = 'top .3s ease-out';
 	$('#music').ontimeupdate = function () {
 		//获取播放的当前时间
 		if (!flag) return;

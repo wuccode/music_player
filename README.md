@@ -24,4 +24,4 @@ bar.init()//初始化
 
 效果图
 
-![Alt text](img/QQ截图20200622203316.png)
+![Alt text](https://github.com/wuccode/music_player/tree/master/img/QQ截图20200622203316.png)

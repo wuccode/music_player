@@ -30,19 +30,15 @@ function jsonp(json) {
 		return;
 	}
 	$('#list').style.display = 'block';
-	if (json.data.length > 0) {
-		for (let key in json.data[0].RecordDatas) {
-			var oLi = document.createElement('li');
-			if (oLi.innerText.length < 6) {
-				oLi.innerHTML = '<span id="co">' + json.data[0].RecordDatas[key].HintInfo + '</span><span> 热度:' + json.data[0].RecordDatas[key].Hot + '</span>';
-				$('#list').appendChild(oLi);
-			}
+	if (json.data.length > 0) {		
+		json.data[0].RecordDatas.forEach( key => {
+			$('#list').innerHTML += '<li><span id="co">' + key.HintInfo + '</span><span> 热度:' + key.Hot + '</span></li>';
 			for (let i = 0; i < $('#list').children.length; i++) {
 				$('#list').children[i].onclick = function () {
 					getText(this.children[0].innerText)
 				}
 			}
-		}
+		})
 	}
 }
 $('#int').onkeydown = function searchDown() {
@@ -60,7 +56,7 @@ if (arrMusicJson.length > 0) {
 //获取歌曲列表数据
 function getText(text) {
 	//设置搜索前0到50首歌
-	let page = 0; let pagesize = 50;
+	let page = 0; let pagesize = 30;
 	//清空搜索列表
 	$('#listS').innerHTML = '';
 	$('#floatHeaderTitle').innerText = `“${text}”`;
@@ -85,7 +81,6 @@ function time(t) {
 }
 //获取歌曲
 function getList(data) {
-
 	if (data.data.lists.length < 1) return;
 	data.data.lists.forEach((d, index) => {
 		let li = document.createElement('li');

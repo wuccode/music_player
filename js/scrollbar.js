@@ -48,15 +48,15 @@ class ScrollBar {
         this.newDiv.children[1].style.top = scrTop +'px';
     }
     scrollBarWheel() {
-        let mouseWheel = (/Firefox/i.test(navigator.userAgent)) ? "DOMMouseScroll" : "mousewheel"; 
+        let mouseWheel = (/Firefox/i.test(navigator.userAgent)) ? "DOMMouseScroll" : "wheel"; 
         this.newDiv.addEventListener(mouseWheel, (ev) => {
             clearInterval(this.timer)
             let e = ev || window.event;
             e.preventDefault()
             let Ewheel = e.wheelDelta || e.detail; 
             let num = this.newDiv.children[0].offsetTop;
-            this.timer = setInterval(() => {
-                if (Ewheel === -180 || Ewheel === 3) {
+            this.timer = setInterval(() => {                
+                if (Ewheel === -180 || Ewheel === 3 || Ewheel === -120) {
                     this.conMoveTarget -= 60;
                     if (this.conMoveTarget < num - 100) {
                         clearInterval(this.timer)
@@ -66,7 +66,7 @@ class ScrollBar {
                         clearInterval(this.timer);
                     }
                 }
-                if (Ewheel === 180 || Ewheel === -3) {
+                if (Ewheel === 180 || Ewheel === -3 || Ewheel === 120) {
                     this.conMoveTarget += 60;
                     if (this.conMoveTarget > num + 100) {
                         clearInterval(this.timer)

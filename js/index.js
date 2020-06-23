@@ -1,4 +1,4 @@
-let index = 0, site = 0, timer = null, timerOne = null, flag = true, active = true, initLeft, muiscTime = [];
+let index = 0, site = 0, timer = null, timerOne = null, flag = true, active = true, initLeft, muiscTime = [], muiscSite = 0;
 //初始化本地数据  
 let arrMusicJson = localStorage.getItem('music') != "[]" && localStorage.getItem('music') ? JSON.parse(localStorage.getItem('music')) : dataJson
 let mId = '014b3c1fadcf06c1e3d529a6183c290a';
@@ -30,8 +30,8 @@ function jsonp(json) {
 		return;
 	}
 	$('#list').style.display = 'block';
-	if (json.data.length > 0) {		
-		json.data[0].RecordDatas.forEach( key => {
+	if (json.data.length > 0) {
+		json.data[0].RecordDatas.forEach(key => {
 			$('#list').innerHTML += '<li><span id="co">' + key.HintInfo + '</span><span> 热度:' + key.Hot + '</span></li>';
 			for (let i = 0; i < $('#list').children.length; i++) {
 				$('#list').children[i].onclick = function () {
@@ -319,8 +319,10 @@ function getMuisc(option) {
 		//获取播放的当前时间
 		if (!flag) return;
 		let currtTime = Math.round($('#music').currentTime);
-		let index = muiscTime.findIndex(time => time === currtTime)
-		lyricsMove(index)
+		if (muiscTime.includes(currtTime)) {
+			muiscSite = muiscTime.findIndex(time => time === currtTime)
+		}
+		lyricsMove(muiscSite)
 	}
 }
 //拖动进度条
@@ -331,8 +333,8 @@ $('.progress-x').onmousedown = function (el) {
 	document.onmousemove = function (ele) {
 		let e = ele || window.ele;
 		initLeft = e.clientX - $('.bottom-main').offsetLeft - $('.progress').offsetLeft + 200 - posLeft;
-		let index = muiscTime.findIndex((time,index) => currentPos(initLeft) >= time && currentPos(initLeft) <= muiscTime[index+1]);
-		lyricsMove(index)
+		muiscSite = muiscTime.findIndex((time, index) => currentPos(initLeft) >= time && currentPos(initLeft) <= muiscTime[index + 1]);
+		lyricsMove(muiscSite)
 		$('.progress-w').style.width = initLeft + 'px';
 		$('.progress-x').style.left = initLeft + 'px';
 		if (initLeft < 0) {
@@ -344,7 +346,7 @@ $('.progress-x').onmousedown = function (el) {
 			$('.progress-x').style.left = $('.progress').offsetWidth - $('.progress-x').offsetWidth + 'px';
 		}
 		$('#content-time').innerText = time(currentPos(initLeft)) + ' / ' + time(parseInt($('#music').duration));
-		
+
 		return false;
 	}
 	document.onmouseup = function () {
@@ -357,9 +359,10 @@ $('.progress-x').onmousedown = function (el) {
 	}
 }
 function lyricsMove(index) {
-	if(index === -1) return; 
-	[...$('.main-content').children].map(h => h.removeAttribute("class", "action"))
-	$('.main-content').children[index].setAttribute("class", "action");
+	if (index !== -1) {
+		[...$('.main-content').children].map(h => h.removeAttribute("class", "action"))
+		$('.main-content').children[index].setAttribute("class", "action");
+	}
 	//移动歌词
 	if (!active) return;
 	mainBar.conMoveTarget = -(40 * (index - 4));
@@ -382,8 +385,8 @@ function currentPos(pos) {
 //进度条点击播放到对应的时间
 $('.progress').onclick = function (el) {
 	let left = el.clientX - $('.bottom-main').offsetLeft - $('.progress').offsetLeft + 200;
-	let index = muiscTime.findIndex((time,index) => currentPos(left) >= time && currentPos(left) <= muiscTime[index+1]);
-	lyricsMove(index)
+	muiscSite = muiscTime.findIndex((time, index) => currentPos(left) >= time && currentPos(left) <= muiscTime[index + 1]);
+	lyricsMove(muiscSite)
 	$('#content-time').innerText = time(currentPos(left)) + ' / ' + time(parseInt($('#music').duration));
 	$('#music').currentTime = left * ($('#music').duration / ($('.progress').offsetWidth - 8));
 	$('.progress-w').style.width = ($('.progress').offsetWidth - 11) / $('#music').duration * $('#music').currentTime + 'px';

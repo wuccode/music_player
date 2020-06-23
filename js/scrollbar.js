@@ -85,7 +85,7 @@ class ScrollBar {
     }
     scrollBarDown() {
         this.newDiv.children[1].addEventListener('mousedown', (e) => {
-            var e = e || window.e;
+            var e = e || window.event;
             e.preventDefault()
             var yy = e.pageY - (this.newDiv.children[1].offsetTop);
             document.onmousemove = (ee) => {

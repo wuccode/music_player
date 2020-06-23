@@ -331,7 +331,7 @@ $('.progress-x').onmousedown = function (el) {
 	flag = false;
 	let posLeft = el.clientX - ($('.bottom-main').offsetLeft + $('.progress').offsetLeft) - $('.progress-x').offsetLeft + 200;
 	document.onmousemove = function (ele) {
-		let e = ele || window.ele;
+		let e = ele || window.event;
 		initLeft = e.clientX - $('.bottom-main').offsetLeft - $('.progress').offsetLeft + 200 - posLeft;
 		muiscSite = muiscTime.findIndex((time, index) => currentPos(initLeft) >= time && currentPos(initLeft) <= muiscTime[index + 1]);
 		lyricsMove(muiscSite)
@@ -408,7 +408,7 @@ function moveEach(ele, t) {
 //控制音量
 $('#music').volume = 0.33;
 $('.sY').onclick = function (el) {
-	let e = el || window.el;
+	let e = el || window.event;
 	let left = -(e.clientY - $('.fixed-bottom').offsetTop + 4);
 	if (left > 96) left = 96
 	if (left < 0) left = 0;
@@ -420,7 +420,7 @@ $('.sY').onclick = function (el) {
 }
 $('.sY-Y').onmousedown = function () {
 	document.onmousemove = function (el) {
-		let e = el || window.el;
+		let e = el || window.event;
 		let sizeTop = -(e.pageY - $('.fixed-bottom').offsetTop) - 4;
 		$('.sY-Y').style.bottom = sizeTop + 'px';
 		if (sizeTop > 96) $('.sY-Y').style.bottom = 96 + 'px'

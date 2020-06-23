@@ -123,6 +123,14 @@ body::-webkit-scrollbar-thumb{
     transform: translateY(-50%);
     right: 10px;
 }
+.top-nav-right{
+    position:absolute;
+    top: 50%;
+    transform: translateY(-50%);
+    right: 30px;
+    cursor: pointer;
+
+}
 .wrapper #wrapper-bg{
     width: 100%;
     height: calc(100vh - 80px);

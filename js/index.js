@@ -274,7 +274,7 @@ function control() {
 	}
 	$('.main').onmouseout = function () {
 		active = true;
-		this.children[0].style.transition = 'top .3s ease-out';
+		this.children[0].style.transition = 'top .4s ease-out';
 	}
 }
 function getMuisc(option) {
@@ -362,16 +362,17 @@ function lyricsMove(index) {
 	if (index !== -1) {
 		[...$('.main-content').children].map(h => h.removeAttribute("class", "action"))
 		$('.main-content').children[index].setAttribute("class", "action");
+		//移动歌词
+		if (!active) return;
+		mainBar.conMoveTarget = -(40 * (index - 4));
+		let top = parseInt($('.main-content').offsetTop * (($('.main').children[1].offsetHeight - $('.main').offsetHeight) / ($('.main').offsetHeight - $('.main-content').offsetHeight)))
+		//移动滚动条
+		if (-top < 0) top = 0;
+		if (-top > ($('.main').offsetHeight - $('.main').children[1].offsetHeight)) top = -($('.main').offsetHeight - $('.main').children[1].offsetHeight);
+		mainBar.scrMoveTarget = -top;
+		mainBar.updateTop()
 	}
-	//移动歌词
-	if (!active) return;
-	mainBar.conMoveTarget = -(40 * (index - 4));
-	let top = parseInt($('.main-content').offsetTop * (($('.main').children[1].offsetHeight - $('.main').offsetHeight) / ($('.main').offsetHeight - $('.main-content').offsetHeight)))
-	//移动滚动条
-	if (-top < 0) top = 0;
-	if (-top > ($('.main').offsetHeight - $('.main').children[1].offsetHeight)) top = -($('.main').offsetHeight - $('.main').children[1].offsetHeight);
-	mainBar.scrMoveTarget = -top;
-	mainBar.updateTop()
+
 }
 //播放时间
 function currentPos(pos) {

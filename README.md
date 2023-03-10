@@ -19,26 +19,4 @@
 >>主要参数：hash=`每首歌对应的hash，这个先要通过歌曲列表接口获取`，callback=`回调函数名字`，mid=`这个参数很重要，经过我的测试如果歌曲的url、歌词、图片获取不到，就是这个参数需要修改（不过这个一般不用改）,不行的可以去酷狗官网放首歌看下它的这个接口里mid参数是多少。`，album_id=`这个id我也不知道有什么用，他也可以通过歌曲列表接口获取`
 
 >>演示：https://wwwapi.kugou.com/yy/index.php?r=play/getdata&callback=getUrl&hash=557FECD1FC8298CA0E1EC675AB8857ED&album_id=37376237&mid=014b3c1fadcf06c1e3d529a6183c290a&platid=4&_=5721125717
-## 我封装的滚动条
-基本使用方法
-```
-//html代码,main里只能有一个子标签包裹着内容
-<div class="main">
-       <div>
-           //内容
-           <p>1<p/>......
-       </div>
-</div>
-//引入滚动条
-<script src="./scrollbar.js"></script>
-//js代码
-let bar = new ScrollBar({
-    div : document.querySelector('.main'),
-    bgColor : '#000'
-})
-bar.init()//初始化
-```
 
-效果图
-
-![Alt text](http://wuchuang222.gz01.bdysite.com/img/QQ%E6%88%AA%E5%9B%BE20200622203316.png)

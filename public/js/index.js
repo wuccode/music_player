@@ -1,7 +1,7 @@
 let index = 0, site = 0, timer = null, timerOne = null, flag = true, active = true, initLeft, muiscTime = [], muiscSite = 0;
 //初始化本地数据  
 let arrMusicJson = localStorage.getItem('music') != "[]" && localStorage.getItem('music') ? JSON.parse(localStorage.getItem('music')) : dataJson
-let mId = '014b3c1fadcf06c1e3d529a6183c290a';
+let buffer = null; 
 //播放列表滚动条    
 let listBar = new ScrollBar({
 	div: $('.bar'),
@@ -80,13 +80,13 @@ function time(t) {
 	return F + ':' + M
 }
 //获取歌曲
-function getList(data) {
+ function getList(data) {
 	if (data.data.lists.length < 1) return;
 	data.data.lists.forEach((d, index) => {
 		let li = document.createElement('li');
 		li.innerHTML = `<span class="nums">${index + 1}.</span><span class="mName">${d.FileName}</span><span class="mAlbum">${d.AlbumName}</span><span class="mTime">${time(d.Duration)}</span>`
 		$('#listS').appendChild(li)
-		li.onclick = function () {
+		li.onclick = async function () {
 			let findMusicIndex = arrMusicJson.findIndex(e => e.hash == d.FileHash);
 			if (findMusicIndex != -1) {
 				getMuisc(arrMusicJson[findMusicIndex]);
@@ -94,29 +94,29 @@ function getList(data) {
 				select();
 				return;
 			}
-			//如果没有就创建script标签去请求
-			let Url = `https://wwwapi.kugou.com/yy/index.php?r=play/getdata&callback=getUrl&hash=${d.FileHash}&album_id=${d.AlbumID}&mid=${mId}&platid=4&_=${random(10)}`;
-			get(Url)
+            let {FileHash,AlbumID} = data.data.lists[index]
+            let result = await fetch(`/audioUrl?hash=${FileHash}&album_id=${AlbumID}`,{method:'get'}).then((d)=> d.json()).then((d)=> d)
+			getUrl(result)
 		}
 	})
 	$('.to').innerText = '为你搜索到' + data.data.lists.length + '首歌曲更多请登录客户端...'
 	searchBar.init()
 }
 initList(arrMusicJson)
-function getUrl(get) {
-	if (!get.data.play_url) {
+async function getUrl(get) {
+	if (!get.audio_url) {
 		alert('获取失败')
 		return;
 	};
 	let obj = {
-		hash: get.data.hash,
-		url: get.data.play_url,
-		name: get.data.author_name,
-		song_name: get.data.song_name,
-		audio_name: get.data.audio_name,
-		lyrics: get.data.lyrics,
-		img: get.data.img,
-		album_name: get.data.album_name
+		hash: get.hash,
+		url: get.audio_url,
+		name: get.author_name,
+		song_name: get.song_name,
+		audio_name: get.audio_name,
+		lyrics: get.lyrics,
+		img: get.img,
+		album_name: get.album_name
 	}
 	//向数组前面插入一条数据
 	arrMusicJson.unshift(obj)
@@ -131,6 +131,8 @@ function getUrl(get) {
 	}
 	//开始播放
 	$('.pause').click()
+    buffer = await initVisualBuffer(obj.url)
+    start(0,buffer)
 	//当前播放的歌曲在列表高亮
 	select();
 	//初始化滚动条
@@ -153,30 +155,19 @@ function random(i) {
 	return newRandom;
 }
 //暂停播放
-$('.play').addEventListener('click', function () {
+$('.play').addEventListener('click', async function () {
 	if (arrMusicJson.length < 1) return;
 	$('#music').pause();
 	flag = false;
+    audioCtx.suspend()
 	this.style.display = 'none';
 	$('.pause').style.display = 'inline-block';
 	$('.play-bar').className = 'play-bar'
 	$('.content-left').className = 'content-left left-active'
 
 })
-function strUrl() {
-	let str = '';
-	if (decodeURI($('#music').src).includes('音乐播放器')) {
-		str = '.' + decodeURI($('#music').src).split('音乐播放器')[1]
-	} else if (decodeURI($('#music').src).includes('http://wuchuang222.gz01.bdysite.com/')) {
-		str = './' + decodeURI($('#music').src).split('http://wuchuang222.gz01.bdysite.com/')[1]
-	}
-	else {
-		str = decodeURI($('#music').src);
-	}
-	return str;
-}
 function select() {
-	let urlIndex = arrMusicJson.findIndex(e => e.url === strUrl());
+	let urlIndex = arrMusicJson.findIndex(e => e.hash === localStorage.getItem('music_hash'));
 	if (urlIndex == -1) return;
 	for (let i = 0; i < $('#ul-list').children.length; i++) {
 		$('#ul-list').children[i].children[1].className = 'nameList';
@@ -184,12 +175,14 @@ function select() {
 	$('#ul-list').children[urlIndex].children[1].className = 'active nameList';
 }
 //开始播放
-$('.pause').onclick = function () {
+$('.pause').onclick = async function () {
 	if (arrMusicJson.length < 1) return;
 	//定时器的锁
 	flag = true;
 	//播放
-	$('#music').play();
+    let buffer = await initVisualBuffer(arrMusicJson[site].url)
+    play(buffer)
+	$('#music').play();  
 	//开启定时器
 	moveEach(timerOne, 20)
 	//切换按钮
@@ -199,21 +192,26 @@ $('.pause').onclick = function () {
 	$('.play').style.display = 'inline-block';
 	//当前播放的歌曲在列表高亮
 	select()
+    
 }
 //初始化页面
 getMuisc(arrMusicJson[site]);
 //切换下一首歌
-$('.next').onclick = function () {
+$('.next').onclick = async function () {
 	if (arrMusicJson.length < 1) return;
 	//当前索引 + 1
-	site = arrMusicJson.findIndex(e => e.url === strUrl()) + 1;
+	site = arrMusicJson.findIndex(e => e.hash === localStorage.getItem('music_hash')) + 1;
+    
 	//定时器的锁
 	flag = true;
 	//开启定时器
+    
 	moveEach(timerOne, 20)
 	if (site > arrMusicJson.length - 1) site = 0;
 	//页面切换
 	getMuisc(arrMusicJson[site])
+    buffer = await initVisualBuffer(arrMusicJson[site].url)
+    start(0,buffer)
 	//播放
 	$('#music').play();
 	//切换按钮
@@ -225,17 +223,20 @@ $('.next').onclick = function () {
 	select();
 }
 //切换上一首歌
-$('.prev').onclick = function () {
+$('.prev').onclick = async function () {
 	if (arrMusicJson.length < 1) return;
 	//当前索引 - 1
-	site = arrMusicJson.findIndex(e => e.url === strUrl()) - 1;
+	site = arrMusicJson.findIndex(e => e.hash === localStorage.getItem('music_hash')) - 1;
 	flag = true;
 	//开启定时器
+    
 	moveEach(timerOne, 20)
 	if (site < 0) site = arrMusicJson.length - 1;
 	//页面切换
 	getMuisc(arrMusicJson[site])
 	//播放
+    buffer = await initVisualBuffer(arrMusicJson[site].url)
+    start(0,buffer)
 	$('#music').play();
 	//切换按钮
 	$('.play-bar').className = 'play-bar play-active'
@@ -260,6 +261,7 @@ $('#music').onended = function () {
 			break;
 		case 1:
 			$('#music').play();
+            start(0,buffer)
 			break;
 		case 2:
 			$('#ul-list').children[parseInt(Math.random() * arrMusicJson.length - 1)].click()
@@ -282,6 +284,7 @@ function getMuisc(option) {
 	if (arrMusicJson.length < 1) return;
 	$('.main-content').innerHTML = '';
 	muiscTime = [];
+	localStorage.setItem('music_hash', option.hash)
 	$('#music').src = option.url;
 	$('#left-content').innerHTML = option.album_name;//专辑
 	$('#left-content').title = option.album_name;
@@ -349,10 +352,15 @@ $('.progress-x').onmousedown = function (el) {
 
 		return false;
 	}
-	document.onmouseup = function () {
+	document.onmouseup = async function () {
 		document.onmousemove = null;
 		if (!initLeft) return;
 		$('#music').currentTime = initLeft * ($('#music').duration / ($('.progress').offsetWidth - 12));
+        // let buffer = await initVisualBuffer(arrMusicJson[site].url)
+        if(!buffer) {
+            buffer = await initVisualBuffer(arrMusicJson[site].url)
+        }
+        start($('#music').currentTime,buffer)
 		moveEach(timerOne, 20)
 		flag = true;
 		document.onmouseup = null;
@@ -384,12 +392,16 @@ function currentPos(pos) {
 	return time;
 }
 //进度条点击播放到对应的时间
-$('.progress').onclick = function (el) {
+$('.progress').onclick = async function (el) {
 	let left = el.clientX - $('.bottom-main').offsetLeft - $('.progress').offsetLeft + 200;
 	muiscSite = muiscTime.findIndex((time, index) => currentPos(left) >= time && currentPos(left) <= muiscTime[index + 1]);
 	lyricsMove(muiscSite)
 	$('#content-time').innerText = time(currentPos(left)) + ' / ' + time(parseInt($('#music').duration));
 	$('#music').currentTime = left * ($('#music').duration / ($('.progress').offsetWidth - 8));
+    if(!buffer) {
+        buffer = await initVisualBuffer(arrMusicJson[site].url)
+    }
+    start($('#music').currentTime,buffer)
 	$('.progress-w').style.width = ($('.progress').offsetWidth - 11) / $('#music').duration * $('#music').currentTime + 'px';
 	$('.progress-x').style.left = ($('.progress').offsetWidth - 11) / $('#music').duration * $('#music').currentTime + 'px';
 }
@@ -455,12 +467,14 @@ function initList(arr) {
 		let li = document.createElement('li');
 		li.innerHTML = `<span class="id">${pos + 1}</span> <span class="nameList">${ele.audio_name}</span> <span class="del iconfont"></span>`;
 		$('#ul-list').appendChild(li);
-		li.onclick = function (e) {
+		li.onclick = async function (e) {
 			if (arrMusicJson.length > 0) {
 				$('.hint').style.display = 'none';
 			}
 			if (e.target.className !== 'del iconfont') {
 				getMuisc(arrMusicJson[pos])
+                buffer = await initVisualBuffer(arrMusicJson[pos].url)
+                start(0,buffer)
 				flag = true;
 				$('#music').play();
 				moveEach(timerOne, 20)

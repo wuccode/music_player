@@ -4,13 +4,15 @@
   "description": "使用原生js实现的音乐播放器 ## API接口 我使用的是酷狗的jsonp接口,经过我测试发现这三个接口可以用，我就用来写了这个播放器， > #### 获取搜索关键字：https://searchtip.kugou.com/getSearchTip",
   "main": "app.js",
   "scripts": {
-    "serve":"node app.js",
+    "serve": "nodemon --watch routes --watch app.js",
     "test": "echo \"Error: no test specified\" && exit 1"
   },
   "keywords": [],
   "author": "",
   "license": "ISC",
   "dependencies": {
-    "express": "^4.18.2"
+    "express": "^4.18.2",
+    "nodemon": "^2.0.21",
+    "request": "^2.88.2"
   }
 }

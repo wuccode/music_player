@@ -86,7 +86,10 @@ function time(t) {
 		let li = document.createElement('li');
 		li.innerHTML = `<span class="nums">${index + 1}.</span><span class="mName">${d.FileName}</span><span class="mAlbum">${d.AlbumName}</span><span class="mTime">${time(d.Duration)}</span>`
 		$('#listS').appendChild(li)
+        let flag = true;
 		li.onclick = async function () {
+            if(!flag) return;
+            flag = false
 			let findMusicIndex = arrMusicJson.findIndex(e => e.hash == d.FileHash);
 			if (findMusicIndex != -1) {
 				getMuisc(arrMusicJson[findMusicIndex]);
@@ -97,6 +100,7 @@ function time(t) {
             let {FileHash,AlbumID} = data.data.lists[index]
             let result = await fetch(`/audioUrl?hash=${FileHash}&album_id=${AlbumID}`,{method:'get'}).then((d)=> d.json()).then((d)=> d)
 			getUrl(result)
+            flag = true
 		}
 	})
 	$('.to').innerText = '为你搜索到' + data.data.lists.length + '首歌曲更多请登录客户端...'

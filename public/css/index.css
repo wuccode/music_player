@@ -852,10 +852,10 @@ body::-webkit-scrollbar-thumb{
     z-index: 1;
     left: 50%;
     transform: translateX(-50%);
-    background: #262b3300;
+    /* background: #d48250; */
 }
 #canvasContent #canvas{
     width:100%;
     height: 160px;
-    opacity: 0.3;
+    opacity: 0.26;
 }

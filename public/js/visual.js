@@ -1,17 +1,17 @@
 const audioCtx = new (window.AudioContext || window.webkitAudioContext)();
-let analyser = audioCtx.createAnalyser();
+let analyser = audioCtx.createAnalyser(), source = null;
 analyser.connect(audioCtx.destination);
-let source = null
-let canvas = document.getElementById('canvas');
-let ctx = canvas.getContext('2d');
-let WIDTH = canvas.width;
-let HEIGHT = canvas.height
 analyser.fftSize = 1024;
 let bufferLength = analyser.frequencyBinCount
 let dataArray = new Uint8Array(bufferLength)
-let barWidth = ((WIDTH / bufferLength) - 1)
-let barHeight;
 let gainNode = audioCtx.createGain();
+let canvas = document.getElementById('canvas');
+let ctx = canvas.getContext('2d');
+let CW = canvas.width, CH = canvas.height;
+let BW = ((CW / bufferLength) - 1), BH;
+let grd = ctx.createLinearGradient(0,CH,0,0);
+    grd.addColorStop(0,'#f2330d');
+    grd.addColorStop(1,"#d48250");
 async function initVisualBuffer(url){
     let res = await fetch(url)
     let arrayBuffer = await res.arrayBuffer()
@@ -35,34 +35,24 @@ function play(audioBuffer){
     draw() 
  }
 function start(time,audioBuffer){
-    if(source){
-        source.onended = null
-        source.stop()
-    }
+    if(source) source.stop()
     audioCtxSet(audioBuffer)
     source.start(0,time)
     draw()
-    source.onended = function(){
-        console.log('结束');
-    }
 }
 audioCtx.onstatechange = () => {
-    console.log(audioCtx.state);
     if(audioCtx.state == 'running') draw() 
 };
 function draw() {
     analyser.getByteFrequencyData(dataArray);
     let x = 0;
-    ctx.clearRect(0, 0, WIDTH, HEIGHT);
+    ctx.clearRect(0, 0, CW, CH);
     for (let i = 0; i < bufferLength; i++) {
-        var grd=ctx.createLinearGradient(0,HEIGHT,0,0);
-        grd.addColorStop(0,'rgb(203, 114, 104)');
-        grd.addColorStop(1,"rgb(255,0,0)");
         ctx.fillStyle=grd;
-        barHeight = dataArray[i]
-        ctx.fillRect(WIDTH / 2 + x, HEIGHT, 1.5, -barHeight)
-        ctx.fillRect(WIDTH / 2 - x, HEIGHT, 1.5, -barHeight)
-        x += barWidth + 1.2;
+        BH = dataArray[i]
+        ctx.fillRect(CW / 2 + x, CH, 1.5, -BH)
+        ctx.fillRect(CW / 2 - x, CH, 1.5, -BH)
+        x += BW + 1.2;
     }
     if(audioCtx.state == 'running') requestAnimationFrame(draw)
 }

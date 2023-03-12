@@ -37,6 +37,7 @@ function play(audioBuffer){
 function start(time,audioBuffer){
     if(source) source.stop()
     audioCtxSet(audioBuffer)
+    audioCtx.resume()
     source.start(0,time)
     draw()
 }

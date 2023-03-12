@@ -12,6 +12,16 @@
                 return window.getComputedStyle(obj,null)[attr];
             }
         }
+        w.debounce = function(fn,outTime = 300){
+            let time = null;
+            const _debounce = function(...args){
+                if(time) clearTimeout(time) 
+                time = setTimeout(()=>{
+                    fn.apply(this,args)
+                },outTime)
+            }
+            return _debounce
+        }
 })(window)
 
     

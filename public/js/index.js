@@ -1,28 +1,17 @@
 let index = 0, site = 0, timer = null, timerOne = null, flag = true, active = true, initLeft, muiscTime = [], muiscSite = 0;
 //初始化本地数据  
 let arrMusicJson = localStorage.getItem('music') != "[]" && localStorage.getItem('music') ? JSON.parse(localStorage.getItem('music')) : dataJson
-let buffer = null; 
-//播放列表滚动条    
-let listBar = new ScrollBar({
-	div: $('.bar'),
-	width: 8
-})
-//搜索列表滚动条
-let searchBar = new ScrollBar({
-	div: $('.search'),
-	width: 8,
-	bgColor: 'rgba(0,0,0,0.2)'
-})
+let buffer = null,flagList = true; 
 //歌词滚动条
 let mainBar = new ScrollBar({
 	div: $('.main'),
 	width: 5,
 })
-$('#int').onkeyup = function info() {
-	if (event.keyCode === 13) return;
-	let url = 'https://searchtip.kugou.com/getSearchTip?keyword=' + this.value + '&callback=jsonp';
-	get(url);
-}
+$('#int').onkeyup = debounce(function(e){
+        if (e.keyCode === 13) return;
+        let url = `https://searchtip.kugou.com/getSearchTip?keyword=${this.value}&callback=jsonp&_=${Date.now()}`;
+	    get(url);
+})
 function jsonp(json) {
 	$('#list').innerHTML = '';
 	if (json == '' || json.data.length == 0) {
@@ -61,7 +50,7 @@ function getText(text) {
 	$('#listS').innerHTML = '';
 	$('#floatHeaderTitle').innerText = `“${text}”`;
 	//创建script标签
-	get(`https://songsearch.kugou.com/song_search_v2?callback=getList&keyword=${text}&page=${page}&pagesize=${pagesize}&userid=-1&clientver=&platform=WebFilter&tag=em&filter=2&iscorrection=1&privilege_filter=0&_=${random(10)}`)
+	get(`https://songsearch.kugou.com/song_search_v2?callback=getList&keyword=${text}&page=${page}&pagesize=${pagesize}&userid=-1&clientver=&platform=WebFilter&tag=em&filter=2&iscorrection=1&privilege_filter=0&_=${Date.now()}`)
 	////显示搜索列表
 	$('.floatList').style.display = 'block';
 	//清空输入框
@@ -86,25 +75,17 @@ function time(t) {
 		let li = document.createElement('li');
 		li.innerHTML = `<span class="nums">${index + 1}.</span><span class="mName">${d.FileName}</span><span class="mAlbum">${d.AlbumName}</span><span class="mTime">${time(d.Duration)}</span>`
 		$('#listS').appendChild(li)
-        let flag = true;
+        
 		li.onclick = async function () {
-            if(!flag) return;
-            flag = false
-			let findMusicIndex = arrMusicJson.findIndex(e => e.hash == d.FileHash);
-			if (findMusicIndex != -1) {
-				getMuisc(arrMusicJson[findMusicIndex]);
-				$('.pause').onclick();
-				select();
-				return;
-			}
+            if(!flagList) return;
+            flagList = false
             let {FileHash,AlbumID} = data.data.lists[index]
             let result = await fetch(`/audioUrl?hash=${FileHash}&album_id=${AlbumID}`,{method:'get'}).then((d)=> d.json()).then((d)=> d)
 			getUrl(result)
-            flag = true
+            
 		}
 	})
 	$('.to').innerText = '为你搜索到' + data.data.lists.length + '首歌曲更多请登录客户端...'
-	searchBar.init()
 }
 initList(arrMusicJson)
 async function getUrl(get) {
@@ -120,14 +101,13 @@ async function getUrl(get) {
 		audio_name: get.audio_name,
 		lyrics: get.lyrics,
 		img: get.img,
-		album_name: get.album_name
+		album_name: get.album_name,
+        albumID:get.AlbumID
 	}
+    if(arrMusicJson.findIndex(arr => arr.hash == get.hash) == -1) arrMusicJson.unshift(obj)
 	//向数组前面插入一条数据
-	arrMusicJson.unshift(obj)
 	//切换页面
 	getMuisc(obj)
-	//更新本地存储
-	localStorage.setItem('music', JSON.stringify(arrMusicJson))
 	//更新播放列表
 	initList(arrMusicJson);
 	if (arrMusicJson.length > 0) {
@@ -135,12 +115,6 @@ async function getUrl(get) {
 	}
 	//开始播放
 	$('.pause').click()
-    buffer = await initVisualBuffer(obj.url)
-    start(0,buffer)
-	//当前播放的歌曲在列表高亮
-	select();
-	//初始化滚动条
-	listBar.init();
 }
 //创建script标签
 function get(url) {
@@ -148,15 +122,6 @@ function get(url) {
 	oScript.src = url;
 	document.body.appendChild(oScript);
 	document.body.removeChild(oScript);
-}
-//产生随机数
-function random(i) {
-	let newRandom = ''
-	let arr = ['0', '1', '2', '3', '4', '5', '6', '7', '8', '9']
-	for (let j = 0; j < i; j++) {
-		newRandom += arr[parseInt(Math.random() * 9)]
-	}
-	return newRandom;
 }
 //暂停播放
 $('.play').addEventListener('click', async function () {
@@ -184,7 +149,9 @@ $('.pause').onclick = async function () {
 	//定时器的锁
 	flag = true;
 	//播放
-    let buffer = await initVisualBuffer(arrMusicJson[site].url)
+    if(!buffer){
+        buffer = await initVisualBuffer(arrMusicJson[site].url)
+    }
     play(buffer)
 	$('#music').play();  
 	//开启定时器
@@ -199,25 +166,20 @@ $('.pause').onclick = async function () {
     
 }
 //初始化页面
-getMuisc(arrMusicJson[site]);
+getMuisc(arrMusicJson[site],true);
 //切换下一首歌
 $('.next').onclick = async function () {
-	if (arrMusicJson.length < 1) return;
+	if (arrMusicJson.length < 1 || !flagList) return;
+    flagList = false
 	//当前索引 + 1
 	site = arrMusicJson.findIndex(e => e.hash === localStorage.getItem('music_hash')) + 1;
-    
 	//定时器的锁
 	flag = true;
 	//开启定时器
-    
 	moveEach(timerOne, 20)
 	if (site > arrMusicJson.length - 1) site = 0;
 	//页面切换
 	getMuisc(arrMusicJson[site])
-    buffer = await initVisualBuffer(arrMusicJson[site].url)
-    start(0,buffer)
-	//播放
-	$('#music').play();
 	//切换按钮
 	$('.play-bar').className = 'play-bar play-active'
 	$('.content-left').className = 'content-left'
@@ -228,27 +190,23 @@ $('.next').onclick = async function () {
 }
 //切换上一首歌
 $('.prev').onclick = async function () {
-	if (arrMusicJson.length < 1) return;
+	if (arrMusicJson.length < 1 || !flagList) return;
+    flagList = false
 	//当前索引 - 1
 	site = arrMusicJson.findIndex(e => e.hash === localStorage.getItem('music_hash')) - 1;
 	flag = true;
 	//开启定时器
-    
 	moveEach(timerOne, 20)
 	if (site < 0) site = arrMusicJson.length - 1;
 	//页面切换
 	getMuisc(arrMusicJson[site])
-	//播放
-    buffer = await initVisualBuffer(arrMusicJson[site].url)
-    start(0,buffer)
-	$('#music').play();
 	//切换按钮
 	$('.play-bar').className = 'play-bar play-active'
 	$('.content-left').className = 'content-left'
 	$('.pause').style.display = 'none';
 	$('.play').style.display = 'inline-block';
 	//当前播放的歌曲在列表高亮
-	select();
+	
 }
 //当歌曲播放完
 let status = 0;
@@ -259,6 +217,7 @@ $('.icon').onclick = function () {
 	this.style.backgroundPosition = posArr[status];
 }
 $('#music').onended = function () {
+    console.log(status);
 	switch (status) {
 		case 0:
 			$('.next').click();
@@ -268,7 +227,7 @@ $('#music').onended = function () {
             start(0,buffer)
 			break;
 		case 2:
-			$('#ul-list').children[parseInt(Math.random() * arrMusicJson.length - 1)].click()
+			$('#ul-list').children[parseInt(Math.random() * arrMusicJson.length)].click()
 			break;
 	}
 }
@@ -283,13 +242,13 @@ function control() {
 		this.children[0].style.transition = 'top .4s ease-out';
 	}
 }
-function getMuisc(option) {
+async function getMuisc(option,isPlay) {
 	//切换页面内容
 	if (arrMusicJson.length < 1) return;
 	$('.main-content').innerHTML = '';
 	muiscTime = [];
-	localStorage.setItem('music_hash', option.hash)
-	$('#music').src = option.url;
+    let res = await fetch(`/fileDownload?hash=${option.hash}&url=${option.url}`,{method:'get'}).then((d)=> d.json()).then((d)=> d)
+    $('#music').src = res.url;
 	$('#left-content').innerHTML = option.album_name;//专辑
 	$('#left-content').title = option.album_name;
 	$('#right-content').innerHTML = option.name;//歌手
@@ -300,9 +259,15 @@ function getMuisc(option) {
 	$('#img-bg').style.background = `url(${option.img}) no-repeat`;//背景图片
 	$('#left-img').src = option.img;
 	$('#mu-bg').src = option.img;
-	$('.load').href = option.url;
+	$('.load').href = res.url;
 	$('.load').download = option.audio_name;
-	//获取歌词
+    buffer = await initVisualBuffer(res.url)
+    start(0,buffer)
+    !isPlay && $('#music').play();
+	localStorage.setItem('music_hash', option.hash)
+    localStorage.setItem('music', JSON.stringify(arrMusicJson))
+    select();
+    //获取歌词
 	let lyrics = option.lyrics;
 	//切割成数组
 	let txt = lyrics.split('[');
@@ -318,6 +283,7 @@ function getMuisc(option) {
 			//把歌词时间放进数组里
 			muiscTime.push(eachTime);
 		}
+
 	}
 	//初始化滚动条
 	mainBar.init()
@@ -331,6 +297,7 @@ function getMuisc(option) {
 		}
 		lyricsMove(muiscSite)
 	}
+    flagList = true
 }
 //拖动进度条
 $('.progress-x').onmousedown = function (el) {
@@ -365,6 +332,7 @@ $('.progress-x').onmousedown = function (el) {
             buffer = await initVisualBuffer(arrMusicJson[site].url)
         }
         start($('#music').currentTime,buffer)
+        $('.pause').click()
 		moveEach(timerOne, 20)
 		flag = true;
 		document.onmouseup = null;
@@ -373,7 +341,7 @@ $('.progress-x').onmousedown = function (el) {
 function lyricsMove(index) {
 	if (index !== -1) {
 		[...$('.main-content').children].map(h => h.removeAttribute("class", "action"))
-		$('.main-content').children[index].setAttribute("class", "action");
+		$('.main-content').children[index] && $('.main-content').children[index].setAttribute("class", "action");
 		//移动歌词
 		if (!active) return;
 		mainBar.conMoveTarget = -(40 * (index - 4));
@@ -406,6 +374,7 @@ $('.progress').onclick = async function (el) {
         buffer = await initVisualBuffer(arrMusicJson[site].url)
     }
     start($('#music').currentTime,buffer)
+    $('.pause').click()
 	$('.progress-w').style.width = ($('.progress').offsetWidth - 11) / $('#music').duration * $('#music').currentTime + 'px';
 	$('.progress-x').style.left = ($('.progress').offsetWidth - 11) / $('#music').duration * $('#music').currentTime + 'px';
 }
@@ -459,7 +428,7 @@ $('.mlist').addEventListener('click', function (e) {
 			$('.mlist-content').style.display = 'none';
 		} else {
 			$('.mlist-content').style.display = 'block';
-			listBar.init();
+			// listBar.init();
 		}
 	}
 })
@@ -476,11 +445,10 @@ function initList(arr) {
 				$('.hint').style.display = 'none';
 			}
 			if (e.target.className !== 'del iconfont') {
+                if(!flagList) return;
+                flagList = false
 				getMuisc(arrMusicJson[pos])
-                buffer = await initVisualBuffer(arrMusicJson[pos].url)
-                start(0,buffer)
 				flag = true;
-				$('#music').play();
 				moveEach(timerOne, 20)
 				$('.play').style.display = 'inline-block';
 				$('.pause').style.display = 'none';
@@ -494,7 +462,6 @@ function initList(arr) {
 				localStorage.setItem('music', JSON.stringify(arrMusicJson));
 				initList(arrMusicJson)
 				select();
-				listBar.updateTop();
 			}
 		}
 	})

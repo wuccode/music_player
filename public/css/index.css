@@ -569,6 +569,15 @@ body::-webkit-scrollbar-thumb{
 }
 .wrapper .fixed-bottom .bottom-main .mlist .mlist-content ul{
     width: 340px;
+    height: 250px;
+    overflow-y: auto;
+}
+.wrapper .fixed-bottom .bottom-main .mlist .mlist-content ul::-webkit-scrollbar{
+    width: 10px;
+}
+.wrapper .fixed-bottom .bottom-main .mlist .mlist-content ul::-webkit-scrollbar-thumb{
+    background: rgba(255, 255, 255, 0.243);
+    border-radius: 10px;
 }
 .wrapper .fixed-bottom .bottom-main .mlist .mlist-content ul li{
     position: relative;
@@ -738,6 +747,8 @@ body::-webkit-scrollbar-thumb{
 }
 .floatList #listS{
     width: 100%;
+    height: 427px;
+    overflow-y: auto;
 }
 .floatList .head:hover{
     background: #f8f8f8;

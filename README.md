@@ -20,7 +20,9 @@
 >>演示：https://wwwapi.kugou.com/yy/index.php?r=play/getdata&callback=getUrl&hash=557FECD1FC8298CA0E1EC675AB8857ED&album_id=37376237&mid=014b3c1fadcf06c1e3d529a6183c290a&platid=4&_=5721125717
 
 ## 项目启动
-#### 一
-```npm install```      
-#### 二
-```npm run serve```
+``` npm install ```  
+
+``` npm run serve ``` 
+
+## 项目打包
+``` npm run build ``` 

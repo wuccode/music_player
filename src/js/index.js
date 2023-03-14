@@ -80,7 +80,7 @@ function time(t) {
             if(!flagList) return;
             flagList = false
             let {FileHash,AlbumID} = data.data.lists[index]
-            let result = await fetch(`/audioUrl?hash=${FileHash}&album_id=${AlbumID}`,{method:'get'}).then((d)=> d.json()).then((d)=> d)
+            let result = await fetch(`/api/audioUrl?hash=${FileHash}&album_id=${AlbumID}`,{method:'get'}).then((d)=> d.json()).then((d)=> d)
 			getUrl(result)
             
 		}
@@ -149,11 +149,8 @@ $('.pause').onclick = async function () {
 	//定时器的锁
 	flag = true;
 	//播放
-    if(!buffer){
-        buffer = await initVisualBuffer(arrMusicJson[site].url)
-    }
-    play(buffer)
-	$('#music').play();  
+	$('#music').play();
+    audioCtx.resume()  
 	//开启定时器
 	moveEach(timerOne, 20)
 	//切换按钮
@@ -217,19 +214,14 @@ $('.icon').onclick = function () {
 	this.style.backgroundPosition = posArr[status];
 }
 $('#music').onended = function () {
-    console.log(status);
-	switch (status) {
-		case 0:
-			$('.next').click();
-			break;
-		case 1:
-			$('#music').play();
-            start(0,buffer)
-			break;
-		case 2:
-			$('#ul-list').children[parseInt(Math.random() * arrMusicJson.length)].click()
-			break;
-	}
+    if(status == 0){
+        $('.next').click();
+    }else if(status == 1){
+        $('#music').play();
+        audioCtx.resume()
+    }else if(status == 2){
+        $('#ul-list').children[parseInt(Math.random() * arrMusicJson.length)].click()
+    }
 }
 control();
 function control() {
@@ -242,13 +234,21 @@ function control() {
 		this.children[0].style.transition = 'top .4s ease-out';
 	}
 }
+function promiseAudio(dom){
+    return new Promise((r)=>{
+        dom.oncanplay = function(){
+            r()
+        }
+    })
+}
 async function getMuisc(option,isPlay) {
 	//切换页面内容
 	if (arrMusicJson.length < 1) return;
 	$('.main-content').innerHTML = '';
 	muiscTime = [];
-    let res = await fetch(`/fileDownload?hash=${option.hash}&url=${option.url}`,{method:'get'}).then((d)=> d.json()).then((d)=> d)
+    let res = await fetch(`/api/fileDownload?hash=${option.hash}&url=${option.url}`).then((d)=> d.json()).then((d)=> d)
     $('#music').src = res.url;
+    await promiseAudio($('#music'))
 	$('#left-content').innerHTML = option.album_name;//专辑
 	$('#left-content').title = option.album_name;
 	$('#right-content').innerHTML = option.name;//歌手
@@ -261,9 +261,10 @@ async function getMuisc(option,isPlay) {
 	$('#mu-bg').src = option.img;
 	$('.load').href = res.url;
 	$('.load').download = option.audio_name;
-    buffer = await initVisualBuffer(res.url)
-    start(0,buffer)
-    !isPlay && $('#music').play();
+    if(!isPlay){
+        $('#music').play();
+        audioCtx.resume()
+    }
 	localStorage.setItem('music_hash', option.hash)
     localStorage.setItem('music', JSON.stringify(arrMusicJson))
     select();
@@ -283,7 +284,6 @@ async function getMuisc(option,isPlay) {
 			//把歌词时间放进数组里
 			muiscTime.push(eachTime);
 		}
-
 	}
 	//初始化滚动条
 	mainBar.init()
@@ -320,19 +320,14 @@ $('.progress-x').onmousedown = function (el) {
 			$('.progress-x').style.left = $('.progress').offsetWidth - $('.progress-x').offsetWidth + 'px';
 		}
 		$('#content-time').innerText = time(currentPos(initLeft)) + ' / ' + time(parseInt($('#music').duration));
-
 		return false;
 	}
 	document.onmouseup = async function () {
 		document.onmousemove = null;
 		if (!initLeft) return;
 		$('#music').currentTime = initLeft * ($('#music').duration / ($('.progress').offsetWidth - 12));
-        // let buffer = await initVisualBuffer(arrMusicJson[site].url)
-        if(!buffer) {
-            buffer = await initVisualBuffer(arrMusicJson[site].url)
-        }
-        start($('#music').currentTime,buffer)
         $('.pause').click()
+        audioCtx.resume()
 		moveEach(timerOne, 20)
 		flag = true;
 		document.onmouseup = null;
@@ -370,11 +365,8 @@ $('.progress').onclick = async function (el) {
 	lyricsMove(muiscSite)
 	$('#content-time').innerText = time(currentPos(left)) + ' / ' + time(parseInt($('#music').duration));
 	$('#music').currentTime = left * ($('#music').duration / ($('.progress').offsetWidth - 8));
-    if(!buffer) {
-        buffer = await initVisualBuffer(arrMusicJson[site].url)
-    }
-    start($('#music').currentTime,buffer)
     $('.pause').click()
+    audioCtx.resume()
 	$('.progress-w').style.width = ($('.progress').offsetWidth - 11) / $('#music').duration * $('#music').currentTime + 'px';
 	$('.progress-x').style.left = ($('.progress').offsetWidth - 11) / $('#music').duration * $('#music').currentTime + 'px';
 }

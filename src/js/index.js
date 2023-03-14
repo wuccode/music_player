@@ -91,6 +91,7 @@ initList(arrMusicJson)
 async function getUrl(get) {
 	if (!get.audio_url) {
 		alert('获取失败')
+        flagList = true
 		return;
 	};
 	let obj = {

@@ -237,7 +237,7 @@ function control() {
 }
 function promiseAudio(dom){
     return new Promise((r)=>{
-        dom.oncanplay = function(){
+        dom.oncanplaythrough = function(){
             r()
         }
     })

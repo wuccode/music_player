@@ -8,11 +8,12 @@
     <link rel="shortcut icon" href="img/icon.png" type="image/x-icon">
     <link rel="stylesheet" href="css/index.css">
     <!-- 打包的时候注释掉下面5个js文件 -->
-    <!-- <script src="js/function.js" defer></script>
+    <script src="js/function.js" defer></script>
     <script src="js/scrollbar.js" defer></script>
     <script src="js/data.js" defer></script>
     <script src="js/index.js" defer></script>
-    <script src="js/visual.js" defer></script> -->
+    <script src="js/visual.js" defer></script>
+   
 </head>
 
 <body>
@@ -153,4 +154,9 @@
     </div>
 </body>
 <script src="js/main.js"></script>
+<script>
+    window.onbeforeunload = function(){
+        fetch('api/unload')
+    }
+</script>
 </html>

@@ -274,10 +274,17 @@ body::-webkit-scrollbar-thumb{
 }
 .wrapper #wrapper-bg .bg-content .content-right .main{
     width: 100%;
-    min-height: 400px;
     position: relative;
     left: 0px;
+    /* overflow-y: scroll; */
     overflow: hidden;
+    min-height: calc(100vh - 400px);
+}
+.wrapper #wrapper-bg .bg-content .content-right .main::-webkit-scrollbar{
+  width: 5px;
+}
+.wrapper #wrapper-bg .bg-content .content-right .main::-webkit-scrollbar-thumb {
+  background: #5a5d6248;
 }
 .wrapper #wrapper-bg .bg-content .content-right .main div:nth-child(2){
     right: 100px !important;
@@ -285,9 +292,11 @@ body::-webkit-scrollbar-thumb{
 .wrapper #wrapper-bg .bg-content .content-right .main .main-content{
     width: 70%;
     position: absolute;
-    top: 300px;
+    top: 160px;
     left: 0; 
-    transition: top .4s ease-out !important; 
+    transition: top .4s ease-out !important;
+    /* padding-top: calc(100vh - 600px)  ; */
+    /* padding-bottom:calc(100vh - 600px);  */
 }
 
 .wrapper #wrapper-bg .bg-content .content-right .main p{
@@ -513,6 +522,7 @@ body::-webkit-scrollbar-thumb{
     background: lightgrey;
     border-radius: 50%;
     z-index: 999;
+    top: 0;
 }
 .wrapper .fixed-bottom .bottom-main .sound .sound-set .sY .sY-H{
     position: absolute;
@@ -521,7 +531,7 @@ body::-webkit-scrollbar-thumb{
     border-bottom-left-radius: 5px;
     border-bottom-right-radius: 5px;
     background: rgba(246, 8, 48, 0.52);
-    height: 30px;
+    height: 100px;
 }
 .wrapper .fixed-bottom .bottom-main .download{
     position: absolute;
@@ -742,12 +752,12 @@ body::-webkit-scrollbar-thumb{
     cursor: pointer;
 }
 .floatList .search{
-    height: 427px;
-    /* : ; */
+  height: calc(100vh - 400px);
+  overflow: hidden;
 }
 .floatList #listS{
     width: 100%;
-    height: 427px;
+    height: calc(100vh - 400px);
     overflow-y: auto;
 }
 .floatList .head:hover{
@@ -778,6 +788,25 @@ body::-webkit-scrollbar-thumb{
     white-space: nowrap;
     text-overflow: ellipsis;
 }
+.floatList ul li .mAlbum{
+  margin-left:40px ;
+}
+.floatList ul li img{
+  position: absolute;
+  left: 460px;
+  top: 50%;
+transform: translateY(-50%);
+  width: 22px;
+  height: 22px;
+  border-radius: 22px;
+    overflow: hidden;
+}
+.floatList ul li img:hover{
+  background: #a8c6e5bd
+}
+.floatList ul li img:active{
+  background: #a8c7e5
+}
 .floatList ul::-webkit-scrollbar{
     width: 7px;
 }
@@ -795,6 +824,22 @@ body::-webkit-scrollbar-thumb{
     white-space: nowrap;
     text-overflow: ellipsis;
 }
+.floatList ul li .mAlbum{
+  left: 460px;
+
+}
+.freePart{
+  width: 1.5px;
+  height: 6px;
+  background: #fff;
+  position: absolute;
+  top: 50%;
+  transform: translateY(-50%);
+  left: 100px;
+  display: none;
+  z-index: 99;
+}
+
 .floatList ul li .mTime,.floatList .head .mTime{
     position: absolute;
     height: 60px;
@@ -869,4 +914,31 @@ body::-webkit-scrollbar-thumb{
     width:100%;
     height: 160px;
     opacity: 0.26;
+}
+.loading{
+  position: fixed;
+  z-index: 99999;
+  width: 100vw;
+  height: 100vh;
+  background: #169bf300;
+  top: 0;
+  left: 0;
+  display: none;
+  justify-content: center;
+  align-items: center;
+}
+.loading .load{
+  width: 50px;
+  height: 50px;
+  /* background: #123; */
+  animation: loadR 1s linear infinite;
+  
+}
+@keyframes loadR {
+  0%{
+    transform: rotate(0deg);
+  }
+  100%{
+    transform: rotate(360deg);
+  }
 }

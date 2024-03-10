@@ -83,7 +83,6 @@ class AudioInfo {
   async getSearch(search) {
     this.setLoading = true
     let data = await serve.getSearchList({
-      appid: 1014,
       bitrate: 0,
       callback: "callback2",
       clientver: 1000,
@@ -118,14 +117,8 @@ class AudioInfo {
   async getAudioInfo({ EMixSongID }) {
     this.setLoading = true
     let data = await serve.getAudio({
-      appid: 1014,
-      dfid: "11S2N83vTvaU1NxBqR3ux4LI",
       encode_album_audio_id: EMixSongID,
-      mid: "3e816bafb8e505de2310a0329b00f5b6",
       platid: 4,
-      dfid: "11S2N83vTvaU1NxBqR3ux4LI",
-      uuid: "3e816bafb8e505de2310a0329b00f5b6",
-      token: "",
     })
     if (!data.url) {
       alert("获取失败");

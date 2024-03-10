@@ -9,6 +9,7 @@ class Server {
       token: "",
       userid: "0",
       uuid: "3e816bafb8e505de2310a0329b00f5b6",
+      appid: 1014,
     };
   }
   jsonp(url, callback) {

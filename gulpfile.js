@@ -58,7 +58,6 @@ gulp.task('jsminTest', function () {
     //   "src/js/play.js",
     //   "src/js//visual.js",
     //   "src/js/audioInfo.js",
-
     // ]))
     .pipe(concat('main.js'))
     .pipe(rev())
@@ -69,7 +68,7 @@ gulp.task('jsminTest', function () {
 gulp.task('htmlHandler', function () {
   return gulp
     .src('./src/app.html')
-    .pipe(htmlmin({ // 通过配置的参数进行压缩
+    .pipe(htmlmin({ 
       collapseWhitespace: true, //移出空格
       removeEmptyAttributes: true, //表示移出空的属性（仅限于原生属性）
       collapseBooleanAttributes: true, // 移出布尔值属性

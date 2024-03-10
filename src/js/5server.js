@@ -46,15 +46,15 @@ class Server {
         useH5: !0,
         postType: "json",
         callback: async (data) => {
-          let result = await fetch(Server.host + `/api/audioUrl?${Server.join(data)}`).then((d) => d.json()).then((d) => d);
+          let result = await fetch(Server.host + `/api/songinfo?${Server.join(data)}`).then((d) => d.json()).then((d) => d);
           resolve(result)
         },
       });
     })
   }
-  getAudioUrl(audio) {
+  getAudioUrl(api,audio) {
     return new Promise(async (resolve) => {
-      let result = await fetch(Server.host + `/api/fileDownload?hash=${audio.hash}&url=${audio.url}`
+      let result = await fetch(Server.host + `/api/${api}?hash=${audio.hash}&url=${audio.url}`
       ).then((d) => d.json()).then((d) => d);
       resolve(result)
     })

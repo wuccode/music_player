@@ -1,4 +1,3 @@
-const music = document.getElementsByTagName('audio')[0]
 class Play {
   constructor() {
     this.musicTime = []
@@ -8,8 +7,8 @@ class Play {
     this.posArr = ["-64px -179px", "0 -179px", "-128px -179px"];
     $('.pause').addEventListener('click', this.play)
     $('.play').addEventListener('click', this.pause)
-    $('.next').addEventListener('click', this.next.bind(this))
-    $('.prev').addEventListener('click', this.prev.bind(this))
+    $('.next').addEventListener('click', () => audioInfo.getNextMusic())
+    $('.prev').addEventListener('click', () => audioInfo.getPrevMusic())
     $("#music").addEventListener('timeupdate', this.audioUpdate.bind(this))
     $("#music").addEventListener('ended', this.audioEnded.bind(this))
     $("#music").addEventListener('error', this.audioError.bind(this))
@@ -25,29 +24,21 @@ class Play {
     $(".play").style.display = "inline-block";
   }
   pause() {
-    music.pause()
+    $("#music").pause()
+    audioCtx.suspend();
     this.style.display = "none";
     $(".pause").style.display = "inline-block";
     $(".play-bar").className = "play-bar";
     $(".content-left").className = "content-left left-active";
   }
-  next() {
-    audioInfo.getNextMusic()
-    this.play()
-  }
-  prev() {
-    audioInfo.getPrevMusic()
-    this.play()
-  }
   progress(direction, offset) {
     if (direction == 'x') {
       try {
-        $('#music').currentTime = music.duration * (offset / 400)
+        $('#music').currentTime = $("#music").duration * (offset / 400)
       } catch (e) {
-        //TODO handle the exception
       }
     } else {
-      music.volume = 1 - offset / 100
+      $("#music").volume = 1 - offset / 100
     }
   }
   iconClick() {
@@ -57,7 +48,7 @@ class Play {
   }
   audioEnded() {
     if (this.status == 0) {
-      this.next()
+      audioInfo.getNextMusic()
     } else if (this.status == 1) {
       $("#music").play();
       audioCtx.resume();
@@ -68,12 +59,13 @@ class Play {
     }
   }
   audioError() {
-    if(this.isError) return
-    this.next()
+    if (this.isError) return
+    audioInfo.getNextMusic()
   }
   audioUpdate() {
-    let cTime = music.currentTime
+    let cTime = $("#music").currentTime + 0.4
     this.musicSite = this.musicTime.findIndex((time, index) => time < cTime && cTime < this.musicTime[index + 1])
+    if (cTime >= this.musicTime[this.musicTime.length - 1]) this.musicSite = this.musicTime.length - 1
     if (this.musicSite != -1) {
       let y = $(".main").clientHeight / 2
       $(".main-content").style.top = -(40 * (this.musicSite) - y + 40) + 'px';
@@ -81,15 +73,15 @@ class Play {
       $(".main-content").children[this.musicSite] && $(".main-content").children[this.musicSite].setAttribute("class", "action");
     }
     $("#content-time").innerText =
-      time(parseInt(music.currentTime)) + " / " + time(parseInt($("#music").duration));
-    auidoProgress.flag && auidoProgress.amend(Math.ceil(400 * (cTime / music.duration)))
+      time(parseInt($("#music").currentTime)) + " / " + time(parseInt($("#music").duration));
+    auidoProgress.flag && auidoProgress.amend(Math.ceil(400 * (cTime / $("#music").duration)))
   }
   async change(audio) {
-    let { url } = await serve.getAudioUrl(audio)
+    let { url } = await serve.getAudioUrl('localurl',audio)
     audioInfo.setLoading = false
     this.musicTime = []
     $("#music").src = Server.host + url;
-    $("#music").oncanplay = ()=> {
+    $("#music").oncanplay = () => {
       $("#left-content").innerHTML = audio.album_name; //专辑
       $("#left-content").title = audio.album_name;
       $("#right-content").innerHTML = audio.author_name; //歌手
@@ -103,11 +95,8 @@ class Play {
       $(".load").href = Server.host + url;
       $(".load").download = audio.audio_name;
       $(".main-content").innerHTML = ''
-      if(!this.isError){
-        this.play(1)
-      }
+      !this.isError && this.play(1)
       this.isError = false
-      audioCtx.resume()
       if (audio.freePart) {
         $(".freePart").style.left =
           $(".progress").clientWidth * (60 / $("#music").duration) + "px";
@@ -126,6 +115,7 @@ class Play {
           this.musicTime.push(eachTime);
         }
       }
+      $("#music").oncanplay = null
     }
 
   }

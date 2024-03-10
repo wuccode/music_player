@@ -8,12 +8,13 @@ class AudioInfo {
     this.nextMusic = {}
     this.prevMusic = {}
     this.initSongList()
-    this.setCurrentHash = this.arrMusicJson[0].hash
+    this.setCurrentHash = this.arrMusicJson[0] ? this.arrMusicJson[0].hash : ''
     $("#int").addEventListener('keyup', debounce(this.intKeyUp.bind(this)))
     $("#esc").addEventListener('click', () => $("#esc").parentNode.style.display = "none")
     $("#bs").addEventListener('click', () => this.getSearch($("#int").value))
     $("#int").addEventListener('keydown', (e) => e.keyCode == 13 && this.getSearch($("#int").value))
     $(".mlist").addEventListener("click", this.mlistClick);
+
   }
   set setLoading(value) {
     let dis = !value ? "none" : "flex"
@@ -30,33 +31,33 @@ class AudioInfo {
     this.currentIndex = index
     play.change(this.arrMusicJson[this.currentIndex])
   }
-  get getCurrentMusic(){
-    if(this.arrMusicJson.length <= 0){
+  get getCurrentMusic() {
+    if (this.arrMusicJson.length <= 0) {
       alert('请搜索歌曲')
-      return ()=> false
+      return () => false
     }
     this.currentHash != this.arrMusicJson[this.currentIndex].hash && (this.setCurrentHash = this.arrMusicJson[this.currentIndex].hash)
-    return ()=> this.arrMusicJson[this.currentIndex]
+    return () => this.arrMusicJson[this.currentIndex]
   }
-  get getNextMusic(){
-    if(this.arrMusicJson.length <= 0){
+  get getNextMusic() {
+    if (this.arrMusicJson.length <= 0) {
       alert('请搜索歌曲')
-      return ()=> false
+      return () => false
     }
-    let index = this.currentIndex+1 > this.arrMusicJson.length-1 ? 0 : this.currentIndex+1
+    let index = this.currentIndex + 1 > this.arrMusicJson.length - 1 ? 0 : this.currentIndex + 1
     this.nextMusic = this.arrMusicJson[index]
     this.setCurrentHash = this.arrMusicJson[index].hash
-    return ()=> this.nextMusic
+    return () => this.nextMusic
   }
-  get getPrevMusic(){
-    if(this.arrMusicJson.length <= 0){
+  get getPrevMusic() {
+    if (this.arrMusicJson.length <= 0) {
       alert('请搜索歌曲')
-      return ()=> false
+      return () => false
     }
-    let index = this.currentIndex-1 < 0 ? this.arrMusicJson.length-1 : this.currentIndex-1
+    let index = this.currentIndex - 1 < 0 ? this.arrMusicJson.length - 1 : this.currentIndex - 1
     this.prevMusic = this.arrMusicJson[index]
     this.setCurrentHash = this.arrMusicJson[index].hash
-    return ()=> this.prevMusic
+    return () => this.prevMusic
   }
   async intKeyUp(e) {
     if (e.keyCode === 13) return;
@@ -110,7 +111,13 @@ class AudioInfo {
           <span class="mTime">${time(d.Duration)}</span>`;
       $("#listS").appendChild(li);
       li.addEventListener('click', () => this.getAudioInfo(data.data.lists[index]))
+      li.children[2].addEventListener("click", (e) => {
+        e.stopPropagation()
+        this.dsClick(data.data.lists[index])
+      });
     });
+    // document.body.scrollTop
+    $("#listS").scrollTop = 0;
     $('#list').innerHTML = "";
     $(".to").innerText = "为你搜索到" + data.data.lists.length + "首歌曲更多请登录客户端...";
   }
@@ -165,6 +172,22 @@ class AudioInfo {
         $(".mlist-content").style.display = "block";
       }
     }
+  }
+  async dsClick(data) {
+    this.setLoading = true
+    let result = await serve.getAudio({
+      encode_album_audio_id: data.EMixSongID,
+      platid: 4,
+    })
+    let { url } = await serve.getAudioUrl('download',result)
+    console.log(url);
+    const oA = document.createElement('a')
+    oA.href = url
+    oA.download = result.audio_name+".mp3"
+    oA.target = '_blank'
+    oA.click()
+    this.setLoading = false
+
   }
 }
 const audioInfo = new AudioInfo()

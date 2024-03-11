@@ -76,6 +76,7 @@ class AudioInfo {
         for (let i = 0; i < $('#list').children.length; i++) {
           $('#list').children[i].onclick = function () {
             self.getSearch(this.children[0].innerText);
+            e.target.value = this.children[0].innerText
           };
         }
       });

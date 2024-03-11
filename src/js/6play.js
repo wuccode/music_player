@@ -93,7 +93,7 @@ class Play {
       $("#left-img").src = audio.img;
       $("#mu-bg").src = audio.img;
       $(".load").href = Server.host + url;
-      $(".load").download = audio.audio_name;
+      $(".load").download = audio.audio_name+'.mp3';
       $(".main-content").innerHTML = ''
       !this.isError && this.play(1)
       this.isError = false

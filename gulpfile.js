@@ -89,8 +89,8 @@ gulp.task('imgminTest', function () {
 });
 
 gulp.task('mp3Test', function () {
-  return gulp.src('./src/mp3/*') //img的文件路径
-    .pipe(gulp.dest('./dist/src/mp3')) //输出文件夹
+  return gulp.src('./src/mp3/*')
+    .pipe(gulp.dest('./dist/src/mp3'))
 });
 gulp.task('routesTest', function () {
   return gulp.src('./routes/*')

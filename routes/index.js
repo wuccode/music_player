@@ -41,7 +41,7 @@ router.get('/localurl', async function (req, res) {
   var audio_filename = req.query.hash + ".mp3";
   var file_url = file + '/' + IP + audio_filename;
   usrMap.get(IP) ? fs.exists(usrMap.get(IP), async (exists) => {
-    if (exists) fs.unlink(usrMap.get(IP), () => {
+    if (exists && usrMap.get(IP)) fs.unlink(usrMap.get(IP), () => {
       if (req.query.url.includes('http')) usrMap.set(IP, file_url)
     })
   }) : usrMap.set(IP, file_url)

@@ -181,7 +181,6 @@ class AudioInfo {
       platid: 4,
     })
     let { url } = await serve.getAudioUrl('download',result)
-    console.log(url);
     const oA = document.createElement('a')
     oA.href = url
     oA.download = result.audio_name+".mp3"

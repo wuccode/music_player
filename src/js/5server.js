@@ -28,7 +28,7 @@ class Server {
   }
   getSearchList(op) {
     return new Promise((resolve) => {
-      window.infSign(Object.assign(op, this.op), null, {
+      window.infSign({ ...this.op, ...op }, null, {
         useH5: !0,
         postType: "json",
         callback: async (data) => {
@@ -37,32 +37,32 @@ class Server {
           resolve(result)
         },
       });
-    })
+  })
 
-  }
-  getAudio(op) {
-    return new Promise((resolve) => {
-      window.infSign(Object.assign(op, this.op), null, {
-        useH5: !0,
-        postType: "json",
-        callback: async (data) => {
-          let result = await fetch(Server.host + `/api/songinfo?${Server.join(data)}`).then((d) => d.json()).then((d) => d);
-          resolve(result)
-        },
-      });
-    })
-  }
-  getAudioUrl(api,audio) {
-    return new Promise(async (resolve) => {
-      let result = await fetch(Server.host + `/api/${api}?hash=${audio.hash}&url=${audio.url}`
-      ).then((d) => d.json()).then((d) => d);
-      resolve(result)
-    })
-  }
+}
+getAudio(op) {
+  return new Promise((resolve) => {
+    window.infSign({ ...this.op, ...op }, null, {
+      useH5: !0,
+      postType: "json",
+      callback: async (data) => {
+        let result = await fetch(Server.host + `/api/songinfo?${Server.join(data)}`).then((d) => d.json()).then((d) => d);
+        resolve(result)
+      },
+    });
+  })
+}
+getAudioUrl(api, audio) {
+  return new Promise(async (resolve) => {
+    let result = await fetch(Server.host + `/api/${api}?hash=${audio.hash}&url=${audio.url}`
+    ).then((d) => d.json()).then((d) => d);
+    resolve(result)
+  })
+}
   static join(data) {
-    return Object.keys(data).reduce((obj, obj1, index) => {
-      return (obj += `${index ? "&" : ""}${obj1}=${data[obj1]}`);
-    }, "");
-  }
+  return Object.keys(data).reduce((obj, obj1, index) => {
+    return (obj += `${index ? "&" : ""}${obj1}=${data[obj1]}`);
+  }, "");
+}
 }
 const serve = new Server()

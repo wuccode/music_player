@@ -5,27 +5,27 @@ class ProgressBar {
     this.direction = direction
     this.circle = circle
     this.flag = true
-    this.off = this.direction == 'x' ? 'left' : 'top'
-    this.off1 = this.direction == 'x' ? 'offsetLeft' : 'offsetTop'
-    this.off2 = this.direction == 'x' ? 'clientWidth' : 'clientHeight'
-    this.off3 = this.direction == 'x' ? 'width' : 'height'
-    this.off4 = this.direction == 'x' ? 'clientX' : 'clientY'
+    this.ofs = this.direction == 'x' ? 'left' : 'top'
+    this.ofs1 = this.direction == 'x' ? 'offsetLeft' : 'offsetTop'
+    this.client = this.direction == 'x' ? 'clientWidth' : 'clientHeight'
+    this.client1 = this.direction == 'x' ? 'clientX' : 'clientY'
+    this.or = this.direction == 'x' ? 'width' : 'height'
     this.circle.onmousedown = this.mousedown.bind(this)
     this.box.addEventListener('click', this.boxClick.bind(this))
   }
   boxClick(e){
-    let offset = e[this.off4] - this.box.getBoundingClientRect()[this.off]
+    let offset = e[this.client1] - this.box.getBoundingClientRect()[this.ofs]
     offset < 0 && (offset = 0)
-    offset > this.box[this.off2] && (offset = this.box[this.off2])
+    offset > this.box[this.client] && (offset = this.box[this.client])
     play.progress(this.direction,offset)
-    this.amend(e[this.off4] - this.box.getBoundingClientRect()[this.off])
+    this.amend(e[this.client1] - this.box.getBoundingClientRect()[this.ofs])
   }
   mousedown(e) {
-    let client = e[this.off4]
-    let cOffset = this.circle[this.off1]
+    let client = e[this.client1]
+    let cOffset = this.circle[this.ofs1]
     this.flag = false
     document.onmousemove = (e) => {
-      this.amend(cOffset + (e[this.off4] - client))
+      this.amend(cOffset + (e[this.client1] - client))
       return 
     }
     document.onmouseup = (e) => {
@@ -37,9 +37,9 @@ class ProgressBar {
   }
   amend(offset){
     offset < 0 && (offset = 0)
-    offset > this.box[this.off2] && (offset = this.box[this.off2])
-    this.circle.style[this.off] = offset + 'px'
-    this.bar.style[this.off3] = (this.off == 'top' ? 100 - offset : offset) + 'px'
+    offset > this.box[this.client] && (offset = this.box[this.client])
+    this.circle.style[this.ofs] = offset + 'px'
+    this.bar.style[this.or] = (this.ofs == 'top' ? 100 - offset : offset) + 'px'
   }
 }
 let auidoProgress = new ProgressBar({

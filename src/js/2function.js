@@ -11,14 +11,7 @@ let $ = (() => {
     return doc;
   };
 })();
-//获取css样式
-function getStyleAttr(obj, attr) {
-  if (obj.currentStyle) {
-    return obj.currentStyle[attr];
-  } else {
-    return window.getComputedStyle(obj, null)[attr];
-  }
-}
+
 function debounce(fn, outTime = 300) {
   let time = null;
   return function (...args) {

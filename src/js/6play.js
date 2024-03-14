@@ -60,7 +60,9 @@ class Play {
   }
   audioError() {
     if (this.isError) return
-    audioInfo.getNextMusic()
+    audioInfo.getAudioInfo(audioInfo.arrMusicJson[audioInfo.currentIndex],(data)=>{
+      this.play()
+    })
   }
   audioUpdate() {
     let cTime = $("#music").currentTime + 0.4

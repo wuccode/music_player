@@ -18,7 +18,7 @@ class ProgressBar {
     offset < 0 && (offset = 0)
     offset > this.box[this.client] && (offset = this.box[this.client])
     play.progress(this.direction,offset)
-    this.amend(e[this.client1] - this.box.getBoundingClientRect()[this.ofs])
+    this.amend(offset)
   }
   mousedown(e) {
     let client = e[this.client1]

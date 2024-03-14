@@ -30,7 +30,8 @@ router.get('/songinfo', function (req, res) {
       hash: body.hash,
       album_name: body.album_name,
       albumID: req.query.album_id,
-      freePart: body.is_free_part
+      freePart: body.is_free_part,
+      EMixSongID:body.encode_album_audio_id
     };
     res.json(data)
   })

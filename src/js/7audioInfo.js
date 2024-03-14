@@ -14,7 +14,6 @@ class AudioInfo {
     $("#bs").addEventListener('click', () => this.getSearch($("#int").value))
     $("#int").addEventListener('keydown', (e) => e.keyCode == 13 && this.getSearch($("#int").value))
     $(".mlist").addEventListener("click", this.mlistClick);
-
   }
   set setLoading(value) {
     let dis = !value ? "none" : "flex"
@@ -122,7 +121,7 @@ class AudioInfo {
     $('#list').innerHTML = "";
     $(".to").innerText = "为你搜索到" + data.data.lists.length + "首歌曲更多请登录客户端...";
   }
-  async getAudioInfo({ EMixSongID }) {
+  async getAudioInfo({ EMixSongID },fn) {
     this.setLoading = true
     let data = await serve.getAudio({
       encode_album_audio_id: EMixSongID,
@@ -134,10 +133,15 @@ class AudioInfo {
       return;
     }
     this.setLoading = false;
-    if (this.arrMusicJson.findIndex((arr) => arr.hash == data.hash) == -1) this.arrMusicJson.unshift(data);
+    if(fn){
+      this.arrMusicJson[this.currentIndex] = data
+    }else{
+      if (this.arrMusicJson.findIndex((arr) => arr.hash == data.hash) == -1) this.arrMusicJson.unshift(data);
+    }
     localStorage.setItem("music", JSON.stringify(this.arrMusicJson));
-    this.initSongList()
     this.setCurrentHash = data.hash
+    this.initSongList()
+    fn && fn()
   }
   initSongList() {
     $("#ul-list").innerHTML = "";

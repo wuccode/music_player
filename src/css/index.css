@@ -239,7 +239,7 @@ body::-webkit-scrollbar-thumb{
     overflow: hidden;
     white-space: nowrap;
     text-overflow: ellipsis;
-    width: 150px;
+    width: 200px;
     left: 50px;
     color: #fff;
     cursor: pointer;
@@ -254,8 +254,8 @@ body::-webkit-scrollbar-thumb{
 
 .wrapper #wrapper-bg .bg-content .content-right p #right-content{
     position: absolute;
-    width: 100px;
-    right: 200px;
+    width: 150px;
+    right: 150px;
     color: #fff;
     text-align: left;
     cursor: pointer;

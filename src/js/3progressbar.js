@@ -13,8 +13,8 @@ class ProgressBar {
     this.circle.onmousedown = this.mousedown.bind(this)
     this.box.addEventListener('click', this.boxClick.bind(this))
   }
-  boxClick(e){
-    let offset = e[this.client1] - this.box.getBoundingClientRect()[this.ofs]
+  boxClick(e,of=6){
+    let offset = e[this.client1] - this.box.getBoundingClientRect()[this.ofs]-of
     offset < 0 && (offset = 0)
     offset > this.box[this.client] && (offset = this.box[this.client])
     play.progress(this.direction,offset)
@@ -31,7 +31,7 @@ class ProgressBar {
     document.onmouseup = (e) => {
       document.onmousemove = null
       document.onmouseup = null;
-      this.boxClick(e)
+      this.boxClick(e,e[this.client1] - this.circle.getBoundingClientRect()[this.ofs])
       this.flag = true
     }
   }

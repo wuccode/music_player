@@ -34,7 +34,7 @@ class Play {
   progress(direction, offset) {
     if (direction == 'x') {
       try {
-        $('#music').currentTime = $("#music").duration * (offset / 400)
+        $('#music').currentTime = this.audioDuration() * (offset / 400)
       } catch (e) {
       }
     } else {
@@ -64,6 +64,10 @@ class Play {
       this.play()
     })
   }
+  audioDuration(){
+    let d = audioInfo.arrMusicJson[audioInfo.currentIndex].freePart ? 60 : $("#music").duration
+    return Number(parseInt(d))
+  }
   audioUpdate() {
     let cTime = $("#music").currentTime + 0.4
     this.musicSite = this.musicTime.findIndex((time, index) => time < cTime && cTime < this.musicTime[index + 1])
@@ -75,8 +79,8 @@ class Play {
       $(".main-content").children[this.musicSite] && $(".main-content").children[this.musicSite].setAttribute("class", "action");
     }
     $("#content-time").innerText =
-      time(parseInt($("#music").currentTime)) + " / " + time(parseInt($("#music").duration));
-    auidoProgress.flag && auidoProgress.amend(Math.ceil(400 * (cTime / $("#music").duration)))
+      time(parseInt($("#music").currentTime)) + " / " + time(this.audioDuration());
+    auidoProgress.flag && auidoProgress.amend(400 * (($("#music").currentTime) / this.audioDuration()))
   }
   async change(audio) {
     let { url } = await serve.getAudioUrl('localurl',audio)
@@ -99,13 +103,6 @@ class Play {
       $(".main-content").innerHTML = ''
       !this.isError && this.play(1)
       this.isError = false
-      if (audio.freePart) {
-        $(".freePart").style.left =
-          $(".progress").clientWidth * (60 / $("#music").duration) + "px";
-        $(".freePart").style.display = "block";
-      } else {
-        $(".freePart").style.display = "none";
-      }
       let lyrics = audio.lyrics;
       let txt = lyrics.split("[");
       for (let i = 0; i < txt.length; i++) {

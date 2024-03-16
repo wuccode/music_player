@@ -828,18 +828,6 @@ transform: translateY(-50%);
   left: 460px;
 
 }
-.freePart{
-  width: 1.5px;
-  height: 6px;
-  background: #fff;
-  position: absolute;
-  top: 50%;
-  transform: translateY(-50%);
-  left: 100px;
-  display: none;
-  z-index: 99;
-}
-
 .floatList ul li .mTime,.floatList .head .mTime{
     position: absolute;
     height: 60px;

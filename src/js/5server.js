@@ -1,6 +1,6 @@
 
 class Server {
-  // static host = 'http://192.168.0.104'
+  // static host = 'http://192.168.3.114'
   static host = ''
   constructor() {
     this.op = {

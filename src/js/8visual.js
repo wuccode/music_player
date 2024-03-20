@@ -18,24 +18,24 @@ grd.addColorStop(.25, 'rgba(14, 17, 20, 1)');
 grd.addColorStop(.5, '#f2330d');
 grd.addColorStop(1, "#d48250");
 audioCtx.onstatechange = () => {
-  if (audioCtx.state == 'running') draw()
+    if (audioCtx.state == 'running') draw()
 };
 function draw() {
-  ctx.clearRect(0, 0, width, height);
-  analyser.getByteFrequencyData(dataArray);
-  const len = dataArray.length / 2;
-  const barWidth = width / len / 2;
-  ctx.fillStyle = grd;
-  for (let i = 0; i < len; i++) {
-    const data = dataArray[i];
-    const barHeight = (data / 255) * height;
-    const x1 = i * 2 + width / 2;
-    const x2 = width / 2 - (i * 2)
-    const y = height - barHeight;
-    ctx.fillRect(x1, y, barWidth - 2, barHeight);
-    ctx.fillRect(x2, y, barWidth - 2, barHeight);
+    ctx.clearRect(0, 0, width, height);
+    analyser.getByteFrequencyData(dataArray);
+    const len = dataArray.length / 2;
+    const barWidth = width / len / 2;
+    ctx.fillStyle = grd;
+    for (let i = 0; i < len; i++) {
+        const data = dataArray[i];
+        const barHeight = (data / 255) * height;
+        const x1 = i * 2 + width / 2;
+        const x2 = width / 2 - (i * 2)
+        const y = height - barHeight;
+        ctx.fillRect(x1, y, barWidth - 2, barHeight);
+        ctx.fillRect(x2, y, barWidth - 2, barHeight);
 
-  }
-  if (audioCtx.state == 'running') requestAnimationFrame(draw)
+    }
+    if (audioCtx.state == 'running') requestAnimationFrame(draw)
 }
 

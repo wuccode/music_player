@@ -80,7 +80,7 @@ class Play {
     }
     $("#content-time").innerText =
       time(parseInt($("#music").currentTime)) + " / " + time(this.audioDuration());
-    auidoProgress.flag && auidoProgress.amend(400 * (($("#music").currentTime) / this.audioDuration()))
+    audioProgress.flag && audioProgress.amend(400 * (($("#music").currentTime) / this.audioDuration()))
   }
   async change(audio) {
     let { url } = await serve.getAudioUrl('localurl',audio)
@@ -116,7 +116,6 @@ class Play {
       }
       $("#music").oncanplay = null
     }
-
   }
 }
 

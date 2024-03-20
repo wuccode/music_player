@@ -42,7 +42,7 @@ class ProgressBar {
     this.bar.style[this.or] = (this.ofs == 'top' ? 100 - offset : offset) + 'px'
   }
 }
-let auidoProgress = new ProgressBar({
+let audioProgress = new ProgressBar({
   box: $('.progress'),
   bar: $('.progress-w'),
   circle: document.querySelector('.progress-x'),

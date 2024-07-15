@@ -121,6 +121,7 @@ class AudioInfo {
         $(".to").innerText = "为你搜索到" + data.data.lists.length + "首歌曲更多请登录客户端...";
     }
     async getAudioInfo({ EMixSongID }, fn) {
+        console.log(EMixSongID);
         this.setLoading = true
         let data = await serve.getAudio({
             encode_album_audio_id: EMixSongID,
@@ -132,15 +133,14 @@ class AudioInfo {
             return;
         }
         this.setLoading = false;
-        if (fn) {
-            this.arrMusicJson[this.currentIndex] = data
-        } else {
-            if (this.arrMusicJson.findIndex((arr) => arr.hash == data.hash) == -1) this.arrMusicJson.unshift(data);
+        if(fn){
+            fn(data)
+            return
         }
-        localStorage.setItem("music", JSON.stringify(this.arrMusicJson));
+        if (this.arrMusicJson.findIndex((arr) => arr.hash == data.hash) == -1) this.arrMusicJson.unshift(data);
         this.setCurrentHash = data.hash
+        localStorage.setItem("music", JSON.stringify(this.arrMusicJson));
         this.initSongList()
-        fn && fn()
     }
     initSongList() {
         $("#ul-list").innerHTML = "";

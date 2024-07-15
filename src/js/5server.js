@@ -1,14 +1,14 @@
 
 class Server {
-    static host = 'http://192.168.0.104'
+    static host = 'http://192.168.3.46'
     //   static host = ''
     constructor() {
         this.op = {
-            dfid: "11S2N83vTvaU1NxBqR3ux4LI",
-            mid: "3e816bafb8e505de2310a0329b00f5b6",
+            dfid: "f7071a9b7600e17878977cca066999d3",
+            mid: "f7071a9b7600e17878977cca066999d3",
             token: "",
             userid: "0",
-            uuid: "3e816bafb8e505de2310a0329b00f5b6",
+            uuid: "f7071a9b7600e17878977cca066999d3",
             appid: 1014,
         };
     }

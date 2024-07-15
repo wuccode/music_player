@@ -17,6 +17,7 @@ router.get("/songinfo", function (req, res) {
         return (str += `${index ? "&" : ""}${key}=${req.query[key]}`);
     }, "");
     let url = "https://wwwapi.kugou.com/play/songinfo?" + options;
+    console.log(url);
     request.get({ url, headers: { Cookie: cookie } }, async (err, data) => {
         if (err) throw err;
         let body = JSON.parse(data.body).data;

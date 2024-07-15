@@ -26,7 +26,7 @@ class Play {
     pause() {
         $("#music").pause()
         audioCtx.suspend();
-        this.style.display = "none";
+        $('.play').style.display = "none";
         $(".pause").style.display = "inline-block";
         $(".play-bar").className = "play-bar";
         $(".content-left").className = "content-left left-active";
@@ -58,9 +58,12 @@ class Play {
             ].click();
         }
     }
-    audioError() {
-        if (this.isError) return
-        audioInfo.getAudioInfo(audioInfo.arrMusicJson[audioInfo.currentIndex], (data) => {
+    async audioError() {
+        this.pause()
+        audioInfo.getAudioInfo(audioInfo.arrMusicJson[audioInfo.currentIndex],async (data)=>{
+            audioInfo.arrMusicJson[audioInfo.currentIndex] = data
+            let { url } = await serve.getAudioUrl('localurl', data)
+            $("#music").src = Server.host + url+'?_='+ Date.now();
             this.play()
         })
     }
@@ -83,7 +86,7 @@ class Play {
         audioProgress.flag && audioProgress.amend(400 * (($("#music").currentTime) / this.audioDuration()))
     }
     async change(audio) {
-        let { url } = await serve.getAudioUrl('localurl', audio)
+        var { url } = await serve.getAudioUrl('localurl', audio)
         audioInfo.setLoading = false
         this.musicTime = []
         $("#music").src = Server.host + url;

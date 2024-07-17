@@ -22,13 +22,18 @@ class AudioInfo {
     }
     set setCurrentHash(value) {
         this.setLoading = true
-        let list = document.querySelectorAll('.nameList')
-        list.forEach(li => li.className = 'nameList')
+        
+        
         let index = this.arrMusicJson.findIndex(({ hash }) => hash == value)
-        list[index].className = 'active nameList'
+        
         this.currentHash = value
         this.currentIndex = index
         play.change(this.arrMusicJson[this.currentIndex])
+        let list = document.querySelectorAll('.nameList')
+        if(list.length){
+            list.forEach(li => li.className = 'nameList')
+            list[index].className = 'active nameList'
+        }
     }
     get getCurrentMusic() {
         if (this.arrMusicJson.length <= 0) {
@@ -121,7 +126,6 @@ class AudioInfo {
         $(".to").innerText = "为你搜索到" + data.data.lists.length + "首歌曲更多请登录客户端...";
     }
     async getAudioInfo({ EMixSongID }, fn) {
-        console.log(EMixSongID);
         this.setLoading = true
         let data = await serve.getAudio({
             encode_album_audio_id: EMixSongID,
@@ -133,7 +137,7 @@ class AudioInfo {
             return;
         }
         this.setLoading = false;
-        if(fn){
+        if (fn) {
             fn(data)
             return
         }
@@ -193,4 +197,4 @@ class AudioInfo {
 
     }
 }
-const audioInfo = new AudioInfo()
+var audioInfo = new AudioInfo()

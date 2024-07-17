@@ -23,17 +23,24 @@ audioCtx.onstatechange = () => {
 function draw() {
     ctx.clearRect(0, 0, width, height);
     analyser.getByteFrequencyData(dataArray);
-    const len = dataArray.length / 2;
+    dataArr = [...dataArray]
+    dataArr.shift()
+    dataArr.shift()
+    dataArr.shift()
+    dataArr.shift()
+    dataArr.shift()
+    dataArr.shift()
+    const len = dataArr.length / 2;
     const barWidth = width / len / 2;
     ctx.fillStyle = grd;
     for (let i = 0; i < len; i++) {
-        const data = dataArray[i];
+        const data = dataArr[i];
         const barHeight = (data / 255) * height;
         const x1 = i * 2 + width / 2;
         const x2 = width / 2 - (i * 2)
         const y = height - barHeight;
         ctx.fillRect(x1, y, barWidth - 2, barHeight);
-        ctx.fillRect(x2, y, barWidth - 2, barHeight);
+        i && ctx.fillRect(x2, y, barWidth - 2, barHeight);
 
     }
     if (audioCtx.state == 'running') requestAnimationFrame(draw)

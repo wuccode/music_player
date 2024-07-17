@@ -59,15 +59,17 @@ class Play {
         }
     }
     async audioError() {
+        if (this.isError) return
         this.pause()
-        audioInfo.getAudioInfo(audioInfo.arrMusicJson[audioInfo.currentIndex],async (data)=>{
-            audioInfo.arrMusicJson[audioInfo.currentIndex] = data
-            let { url } = await serve.getAudioUrl('localurl', data)
-            $("#music").src = Server.host + url+'?_='+ Date.now();
-            this.play()
-        })
+        let data = await this.newAudio(audioInfo.arrMusicJson[audioInfo.currentIndex])
+        let { url } = await serve.getAudioUrl('localurl', data)
+        $("#music").src = Server.host + url + '?_=' + Date.now();
+        this.play()
     }
     audioDuration() {
+        if(!audioInfo.arrMusicJson[audioInfo.currentIndex]){
+            return  Number(parseInt($("#music").duration))
+        }
         let d = audioInfo.arrMusicJson[audioInfo.currentIndex].freePart ? 60 : $("#music").duration
         return Number(parseInt(d))
     }
@@ -85,7 +87,21 @@ class Play {
             time(parseInt($("#music").currentTime)) + " / " + time(this.audioDuration());
         audioProgress.flag && audioProgress.amend(400 * (($("#music").currentTime) / this.audioDuration()))
     }
+    newAudio(audio) {
+        return new Promise((r) => {
+            setTimeout(() => {
+                audioInfo.getAudioInfo(audio, async (data) => {
+                    audioInfo.arrMusicJson[audioInfo.currentIndex] = data
+                    localStorage.setItem("music", JSON.stringify(audioInfo.arrMusicJson));
+                    r(data)
+                })
+            })
+        })
+    }
     async change(audio) {
+        if (audio.freePart) {
+            audio = await this.newAudio(audio)
+        }
         var { url } = await serve.getAudioUrl('localurl', audio)
         audioInfo.setLoading = false
         this.musicTime = []
@@ -122,4 +138,4 @@ class Play {
     }
 }
 
-const play = new Play()
+var play = new Play()

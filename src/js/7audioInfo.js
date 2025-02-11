@@ -41,6 +41,8 @@ class AudioInfo {
             return () => false
         }
         this.currentHash != this.arrMusicJson[this.currentIndex].hash && (this.setCurrentHash = this.arrMusicJson[this.currentIndex].hash)
+        console.log(this.arrMusicJson[this.currentIndex]);
+        
         return () => this.arrMusicJson[this.currentIndex]
     }
     get getNextMusic() {
@@ -167,6 +169,7 @@ class AudioInfo {
                 if (e.target.className === "del iconfont") {
                     self.arrMusicJson.splice(pos, 1);
                     localStorage.setItem("music", JSON.stringify(self.arrMusicJson));
+                    self.currentIndex && self.currentIndex--
                     self.initSongList()
                 }
             };

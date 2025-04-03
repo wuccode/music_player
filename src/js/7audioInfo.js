@@ -22,13 +22,18 @@ class AudioInfo {
     }
     set setCurrentHash(value) {
         this.setLoading = true
-        
-        
         let index = this.arrMusicJson.findIndex(({ hash }) => hash == value)
-        
         this.currentHash = value
         this.currentIndex = index
         play.change(this.arrMusicJson[this.currentIndex])
+        setTimeout(()=>{
+            particles.forEach(particle => {
+                particle.baseValue = Math.floor(Math.random() * 101);
+                particle.value = particle.baseValue;
+                particle.x = Math.random() * canvas.width;
+                particle.y = Math.random() * canvas.height;
+            });
+        })
         let list = document.querySelectorAll('.nameList')
         if(list.length){
             list.forEach(li => li.className = 'nameList')
@@ -41,8 +46,6 @@ class AudioInfo {
             return () => false
         }
         this.currentHash != this.arrMusicJson[this.currentIndex].hash && (this.setCurrentHash = this.arrMusicJson[this.currentIndex].hash)
-        console.log(this.arrMusicJson[this.currentIndex]);
-        
         return () => this.arrMusicJson[this.currentIndex]
     }
     get getNextMusic() {
@@ -169,7 +172,10 @@ class AudioInfo {
                 if (e.target.className === "del iconfont") {
                     self.arrMusicJson.splice(pos, 1);
                     localStorage.setItem("music", JSON.stringify(self.arrMusicJson));
-                    self.currentIndex && self.currentIndex--
+                    if(self.currentIndex){
+                        (self.currentIndex >= pos) && self.currentIndex--
+                    }
+
                     self.initSongList()
                 }
             };

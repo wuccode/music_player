@@ -901,10 +901,10 @@ transform: translateY(-50%);
 }
 #canvasContent #canvas{
     width:100%;
-    height: 180px;
-    opacity: 0.5;
+    height: calc(100vh - 180px);
+    opacity: 0.3;
     position: relative;
-    bottom: -50px;
+    bottom: -4px;
 }
 .loading{
   position: fixed;

@@ -19,7 +19,7 @@ rev = require("gulp-rev"),
     path = require('path');
 
 gulp.task('revCollector', function () {
-    return gulp.src(["./dist/src/rev/js.rev.json", "./dist/src/rev/css.rev.json", "./dist/src/app.html"])
+    return gulp.src(["./dist/src/rev/js.rev.json", "./dist/src/rev/css.rev.json", "./dist/src/index.html"])
         .pipe(revColl())
         .pipe(gulp.dest("./dist/src"))
 });
@@ -67,7 +67,7 @@ gulp.task('jsminTest', function () {
 });
 gulp.task('htmlHandler', function () {
     return gulp
-        .src('./src/app.html')
+        .src('./src/index.html')
         .pipe(htmlmin({
             collapseWhitespace: true, //移出空格
             removeEmptyAttributes: true, //表示移出空的属性（仅限于原生属性）
@@ -115,5 +115,5 @@ gulp.task('watch', function () {
 
 gulp.task('run', gulp.series(gulp.parallel('connect', 'watch')))
 
-gulp.task('default', gulp.series('clean', 'routesTest', 'appTest', 'htmlHandler', 'cssminTest', 'imgminTest', 'jsminTest', 'revCollector', 'mp3Test', 'cleanRev', (done) => done())
+gulp.task('default', gulp.series('clean', 'routesTest', 'appTest', 'htmlHandler', 'cssminTest', 'jsminTest', 'revCollector', 'mp3Test','imgminTest', 'cleanRev', (done) => done())
 );

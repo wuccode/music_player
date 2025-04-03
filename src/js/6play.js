@@ -3,7 +3,8 @@ class Play {
         this.musicTime = []
         this.musicSite = 0
         this.status = 0;
-        this.isError = true
+        this.isError = false
+        this.init = 0
         this.posArr = ["-64px -179px", "0 -179px", "-128px -179px"];
         $('.pause').addEventListener('click', this.play)
         $('.play').addEventListener('click', this.pause)
@@ -48,7 +49,7 @@ class Play {
     }
     audioEnded() {
         if (this.status == 0) {
-            audioInfo.getNextMusic()
+            audioInfo.getNextMusic() 
         } else if (this.status == 1) {
             $("#music").play();
             audioCtx.resume();
@@ -120,7 +121,8 @@ class Play {
             $(".load").href = Server.host + url;
             $(".load").download = audio.audio_name + '.mp3';
             $(".main-content").innerHTML = ''
-            !this.isError && this.play(1)
+            if(this.init && !this.isError) this.play(1)
+            this.init = 1
             this.isError = false
             let lyrics = audio.lyrics;
             let txt = lyrics.split("[");

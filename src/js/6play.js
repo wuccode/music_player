@@ -60,12 +60,13 @@ class Play {
         }
     }
     async audioError() {
+        
         if (this.isError) return
         this.pause()
         let data = await this.newAudio(audioInfo.arrMusicJson[audioInfo.currentIndex])
         let { url } = await serve.getAudioUrl('localurl', data)
         $("#music").src = Server.host + url + '?_=' + Date.now();
-        this.play()
+        this.init && this.play()
     }
     audioDuration() {
         if(!audioInfo.arrMusicJson[audioInfo.currentIndex]){

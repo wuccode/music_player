@@ -3,6 +3,8 @@ class AudioInfo {
         let music = localStorage.getItem("music")
         this.loading = false
         this.arrMusicJson = music != "[]" && music ? JSON.parse(music) : dataJson;
+        console.log(this.arrMusicJson);
+        
         this.currentHash = ''
         this.currentIndex = 0
         this.nextMusic = {}

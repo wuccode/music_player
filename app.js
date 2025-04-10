@@ -8,6 +8,6 @@ app.use('*', function (req, res, next) {
 app.use(express.json())
 app.use(express.static(join(__dirname, 'src')))
 app.use('/api', require('./routes/index.js'));
-app.listen(8082, () => {
-    console.log('8082端口已开启');
+app.listen(80, () => {
+    console.log('80端口已开启');
 })

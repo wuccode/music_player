@@ -43,15 +43,13 @@ router.get("/localurl", async function (req, res) {
     var file = path.join(__dirname, "../src/audio");
     var audio_filename = req.query.hash + ".mp3";
     var file_url = file + "/" + IP + audio_filename;
-    if (usrMap.get(IP) && fs.existsSync(usrMap.get(IP))) {
-        fs.unlink(usrMap.get(IP), () => {
-            if (req.query.url.includes("http")) usrMap.set(IP, file_url);
-        });
-    } else {
+    if(!usrMap.get(IP)){
         usrMap.set(IP, file_url)
+    }else if(usrMap.get(IP) != file_url){
+        fs.existsSync(usrMap.get(IP)) && fs.unlinkSync(usrMap.get(IP))
     }
     fs.mkdir(file, async () => {
-        if (req.query.url.includes("http")) {
+        if(!fs.existsSync(file_url)){
             let writer = fs.createWriteStream(file_url)
             let response = await axios({
                 url:req.query.url,
@@ -60,11 +58,13 @@ router.get("/localurl", async function (req, res) {
             })
             response.data.pipe(writer)
             writer.on('finish',()=>{
-                res.json({ url: `/audio/${IP + audio_filename}` });
+                usrMap.set(IP,file_url)
+                res.json({ url: `/audio/${IP + audio_filename}`});
             })
-        } else {
-            usrMap.delete(IP);
-            res.json({ url: req.query.url });
+        }else{
+            console.log('重复的');
+            
+            res.json({ url: `/audio/${IP + audio_filename}`})
         }
     });
 });
@@ -87,14 +87,14 @@ router.get("/download", async function (req, res) {
         })
     });
 });
-router.get("/unload", (req, res) => {
-    let IP = req.ip.split(":")[3].replace(/\./g, "");
-    if (fs.existsSync(usrMap.get(IP))) {
-        fs.unlinkSync(usrMap.get(IP));
-        usrMap.delete(IP);
-    }
-    res.send();
-});
+// router.get("/unload", (req, res) => {
+//     let IP = req.ip.split(":")[3].replace(/\./g, "");
+//     if (fs.existsSync(usrMap.get(IP))) {
+//         fs.unlinkSync(usrMap.get(IP));
+//         usrMap.delete(IP);
+//     }
+//     res.send();
+// });
 function deleteFolder(path,IP) {
     if (fs.existsSync(path)) {
         fs.readdirSync(path).forEach((file) => {

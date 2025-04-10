@@ -15,8 +15,13 @@ class Play {
         $("#music").addEventListener('error', this.audioError.bind(this))
         $(".icon").addEventListener('click', this.iconClick.bind(this))
     }
-    play(is) {
+    async play(is) {
         !is && audioInfo.getCurrentMusic()
+        var { url } = await serve.getAudioUrl('localurl', audioInfo.getCurrentMusic())
+        if($("#music").src !== Server.host + url){
+            $("#music").src = Server.host + url;
+            $(".load").href = Server.host + url;
+        }
         $("#music").play();
         audioCtx.resume();
         $('.pause').style.display = "none";
@@ -60,12 +65,9 @@ class Play {
         }
     }
     async audioError() {
-        
         if (this.isError) return
         this.pause()
-        let data = await this.newAudio(audioInfo.arrMusicJson[audioInfo.currentIndex])
-        let { url } = await serve.getAudioUrl('localurl', data)
-        $("#music").src = Server.host + url + '?_=' + Date.now();
+        await this.newAudio(audioInfo.arrMusicJson[audioInfo.currentIndex])
         this.init && this.play()
     }
     audioDuration() {
@@ -101,42 +103,35 @@ class Play {
         })
     }
     async change(audio) {
-        if (audio.freePart) {
-            audio = await this.newAudio(audio)
-        }
-        var { url } = await serve.getAudioUrl('localurl', audio)
+        audio = await this.newAudio(audio)
         audioInfo.setLoading = false
         this.musicTime = []
-        $("#music").src = Server.host + url;
-        $("#music").oncanplay = () => {
-            $("#left-content").innerHTML = audio.album_name; //专辑
-            $("#left-content").title = audio.album_name;
-            $("#right-content").innerHTML = audio.author_name; //歌手
-            $("#right-content").title = audio.author_name;
-            $("#content-title").innerHTML = audio.song_name; //歌名
-            $(".musicName").innerText = audio.song_name;
-            $("#content-title").title = audio.song_name;
-            $("#img-bg").style.background = `url(${audio.img}) no-repeat`; //背景图片
-            $("#left-img").src = audio.img;
-            $("#mu-bg").src = audio.img;
-            $(".load").href = Server.host + url;
-            $(".load").download = audio.audio_name + '.mp3';
-            $(".main-content").innerHTML = ''
-            if(this.init && !this.isError) this.play(1)
-            this.init = 1
-            this.isError = false
-            let lyrics = audio.lyrics;
-            let txt = lyrics.split("[");
-            for (let i = 0; i < txt.length; i++) {
-                let text = txt[i].split("]");
-                let time = text[0].split(":");
-                let eachTime = Math.round(time[0] * 60 + +time[1]);
-                if (!isNaN(eachTime)) {
-                    $(".main-content").innerHTML += `<p>${text[1]}</p>`;
-                    this.musicTime.push(eachTime);
-                }
+        $("#left-content").innerHTML = audio.album_name; //专辑
+        $("#left-content").title = audio.album_name;
+        $("#right-content").innerHTML = audio.author_name; //歌手
+        $("#right-content").title = audio.author_name;
+        $("#content-title").innerHTML = audio.song_name; //歌名
+        $(".musicName").innerText = audio.song_name;
+        $("#content-title").title = audio.song_name;
+        $("#img-bg").style.background = `url(${audio.img}) no-repeat`; //背景图片
+        $("#left-img").src = audio.img;
+        $("#mu-bg").src = audio.img;
+        
+        $(".load").download = audio.audio_name + '.mp3';
+        $(".main-content").innerHTML = ''
+        if(this.init && !this.isError) this.play(1)
+        this.init = 1
+        this.isError = false
+        let lyrics = audio.lyrics;
+        let txt = lyrics.split("[");
+        for (let i = 0; i < txt.length; i++) {
+            let text = txt[i].split("]");
+            let time = text[0].split(":");
+            let eachTime = Math.round(time[0] * 60 + +time[1]);
+            if (!isNaN(eachTime)) {
+                $(".main-content").innerHTML += `<p>${text[1]}</p>`;
+                this.musicTime.push(eachTime);
             }
-            $("#music").oncanplay = null
         }
     }
 }

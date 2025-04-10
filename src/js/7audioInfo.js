@@ -2,9 +2,8 @@ class AudioInfo {
     constructor() {
         let music = localStorage.getItem("music")
         this.loading = false
-        this.arrMusicJson = music != "[]" && music ? JSON.parse(music) : dataJson;
-        console.log(this.arrMusicJson);
-        
+        this.arrMusicJson = music != "[]" && music ? JSON.parse(music) : 
+        [{EMixSongID: "bswoia67", audio_name: "邓寓君(等什么君) - 鸳鸯戏 (DJ哈市小鹏版)"}];
         this.currentHash = ''
         this.currentIndex = 0
         this.nextMusic = {}

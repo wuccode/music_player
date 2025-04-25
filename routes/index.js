@@ -62,8 +62,6 @@ router.get("/localurl", async function (req, res) {
                 res.json({ url: `/audio/${IP + audio_filename}`});
             })
         }else{
-            console.log('重复的');
-            
             res.json({ url: `/audio/${IP + audio_filename}`})
         }
     });

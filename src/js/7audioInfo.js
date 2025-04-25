@@ -121,7 +121,8 @@ class AudioInfo {
           <span class="mAlbum">${d.AlbumName}</span>
           <span class="mTime">${time(d.Duration)}</span>`;
             $("#listS").appendChild(li);
-            li.addEventListener('click', () => this.getAudioInfo(data.data.lists[index]))
+            
+            li.addEventListener('click', () => this.getAudioInfo(data.data.lists[index],0))
             li.children[2].addEventListener("click", (e) => {
                 e.stopPropagation()
                 this.dsClick(data.data.lists[index])
@@ -131,24 +132,33 @@ class AudioInfo {
         $('#list').innerHTML = "";
         $(".to").innerText = "为你搜索到" + data.data.lists.length + "首歌曲更多请登录客户端...";
     }
-    async getAudioInfo({ EMixSongID }, fn) {
+    async getAudioInfo(data, fn) {
         this.setLoading = true
-        let data = await serve.getAudio({
-            encode_album_audio_id: EMixSongID,
-            platid: 4,
-        })
-        if (!data.url) {
+        if(fn !== 0){
+            var result = await serve.getAudio({
+                encode_album_audio_id: data.EMixSongID,
+                platid: 4,
+            })
+        }else{
+            result = {
+                hash: data.FileHash,
+                EMixSongID: data.EMixSongID,
+                audio_name:data.FileName
+            }
+        }
+        if (!result.url && fn !== 0) {
             alert("获取失败");
             this.setLoading = false;
             return;
         }
         this.setLoading = false;
         if (fn) {
-            fn(data)
+            fn(result)
             return
         }
-        if (this.arrMusicJson.findIndex((arr) => arr.hash == data.hash) == -1) this.arrMusicJson.unshift(data);
-        this.setCurrentHash = data.hash
+        if (this.arrMusicJson.findIndex((arr) => arr.hash == result.hash) == -1) this.arrMusicJson.unshift(result);
+        this.setCurrentHash = result.hash
+        if( this.currentHash == result.hash) $('#music').currentTime = 0
         localStorage.setItem("music", JSON.stringify(this.arrMusicJson));
         this.initSongList()
     }

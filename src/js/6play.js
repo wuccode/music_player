@@ -116,7 +116,6 @@ class Play {
         $("#img-bg").style.background = `url(${audio.img}) no-repeat`; //背景图片
         $("#left-img").src = audio.img;
         $("#mu-bg").src = audio.img;
-        
         $(".load").download = audio.audio_name + '.mp3';
         $(".main-content").innerHTML = ''
         if(this.init && !this.isError) this.play(1)

@@ -65,7 +65,7 @@ class Play {
         }
     }
     async audioError() {
-        if (this.isError) return
+        if (this.isError || !this.init) return
         this.pause()
         await this.newAudio(audioInfo.arrMusicJson[audioInfo.currentIndex])
         this.init && this.play()

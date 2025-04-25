@@ -186,7 +186,6 @@ class AudioInfo {
                     if(self.currentIndex){
                         (self.currentIndex >= pos) && self.currentIndex--
                     }
-
                     self.initSongList()
                 }
             };
